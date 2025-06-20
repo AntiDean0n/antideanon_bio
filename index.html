@@ -12,6 +12,7 @@
     <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
         <filter id="glitch">
             <feTurbulence type="fractalNoise" baseFrequency="0.05 0.005" numOctaves="1" result="noise1" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.05 0.005" numOctaves="1" result="displacement1" />
             <feTurbulence type="fractalNoise" baseFrequency="0.05 0.005" numOctaves="1" result="noise2" />
             <feDisplacementMap in="SourceGraphic" in2="noise1" scale="10" xChannelSelector="R" yChannelSelector="B" result="displacement1" />
             <feDisplacementMap in="SourceGraphic" in2="noise2" scale="-10" xChannelSelector="R" yChannelSelector="B" result="displacement2" />
@@ -44,7 +45,7 @@
             <div class="info-line"><span class="info-label">My Telegram:</span><span class="info-value">@fame_antideanon</span></div>
             <div class="info-line"><span class="info-label">My Playlist:</span><span class="info-value"><a href="https://t.me/antideanon_playlist" target="_blank" rel="noopener noreferrer">Click Here</a></span></div>
             <p class="waiting-line">LOADING...</p>
-            </section>
+        </section>
 
         <section id="deffers">
             <h1>Antideanon Deffers</h1>
@@ -143,7 +144,7 @@ A: Да, для постоянных клиентов предусмотрены
             <h2>Admin Panel</h2>
             <p>Welcome, Administrator!</p>
             <p>Total site views: <span id="view-count">0</span></p>
-            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
