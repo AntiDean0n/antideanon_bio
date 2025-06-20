@@ -381,8 +381,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Обработчик кнопки "Enter" в модальном окне
-  submitLoginButton.addEventListener('click', () => {
+  // Функция для обработки логина
+  const handleLogin = () => {
     const username = usernameInput.value;
     const password = passwordInput.value;
 
@@ -397,17 +397,24 @@ document.addEventListener('DOMContentLoaded', () => {
       loginMessage.textContent = 'Access Denied: Invalid credentials.';
       outputToTerminal("[ERROR] Attempted unauthorized access.", true);
     }
-  });
+  };
 
-  // Обработка Enter в полях ввода логина/пароля
+  // Обработчик кнопки "Enter" в модальном окне
+  submitLoginButton.addEventListener('click', handleLogin);
+
+  // Обработка Enter в поле логина: переводит фокус на поле пароля
   usernameInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-      passwordInput.focus();
+      e.preventDefault(); // Предотвращаем стандартное поведение Enter (отправка формы)
+      passwordInput.focus(); // Переводим фокус на поле пароля
     }
   });
+
+  // Обработка Enter в поле пароля: вызывает функцию логина
   passwordInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
-      submitLoginButton.click(); // Имитируем клик по кнопке "Enter"
+      e.preventDefault(); // Предотвращаем стандартное поведение Enter
+      handleLogin(); // Вызываем функцию логина
     }
   });
 });
