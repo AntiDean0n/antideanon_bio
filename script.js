@@ -19,7 +19,7 @@ const systemLogsBox = document.querySelector('.system-logs');
 let currentTypingEffect = null;
 let logInterval = null;
 
-// --- НОВЫЕ/ИЗМЕНЕННЫЕ ЭЛЕМЕНТЫ ДЛЯ ЛОГИНА И АДМИН-ПАНЕЛИ ---
+// --- Элементы для логина и админ-панели ---
 const authButton = document.getElementById('auth-button'); // Кнопка "Login"/"Logout" сверху
 const loginModal = document.getElementById('login-modal'); // Модальное окно логина
 const adminModal = document.getElementById('admin-modal'); // Модальное окно админ-панели
@@ -38,7 +38,7 @@ const ADMIN_PASSWORD = 'NeDarkKich22561.*';
 // --- Функция для увеличения и получения счетчика просмотров ---
 function updateAndGetViewCount() {
     let views = parseInt(localStorage.getItem('siteViews') || 0);
-    // Увеличиваем счетчик просмотров только если это новая сессия или не было увеличено в этой сессии
+    // Увеличиваем счетчик просмотров только если это новая сессия (уникальный визит за сессию)
     if (!sessionStorage.getItem('sessionVisited')) {
         views++;
         localStorage.setItem('siteViews', views);
@@ -53,14 +53,14 @@ function updateAuthUI() {
     if (isAdminLoggedIn) {
         authButton.textContent = 'Logout';
         // Кнопка "Admin Panel" всегда видна на ПК, ее видимость на мобильных управляется handleDeviceDisplay
-        if (window.innerWidth > 768) { // Показывать только на больших экранах
-             adminPanelButton.style.display = 'block';
-        }
-        viewCountSpan.textContent = localStorage.getItem('siteViews') || '0'; // Обновляем счетчик
+        // Нет необходимости устанавливать display здесь, это сделает handleDeviceDisplay
     } else {
         authButton.textContent = 'Login';
-        adminPanelButton.style.display = 'block'; // Всегда показывать кнопку "Admin Panel" по умолчанию (на ПК)
-                                                // Для мобильных скрытие будет в handleDeviceDisplay
+        // Кнопка "Admin Panel" всегда видна на ПК, ее видимость на мобильных управляется handleDeviceDisplay
+    }
+    // Обновляем счетчик в админ-панели, только если она открыта
+    if (adminModal.style.display === 'flex') {
+        viewCountSpan.textContent = localStorage.getItem('siteViews') || '0';
     }
 }
 
@@ -127,6 +127,7 @@ function showSection(id) {
             return;
         }
         targetSection.style.display = 'block';
+        // Принудительная перерисовка для запуска CSS-перехода
         targetSection.offsetHeight;
         targetSection.classList.add('active-section');
 
@@ -251,8 +252,10 @@ const commands = {
     },
     'logout': () => {
         localStorage.removeItem('isAdminLoggedIn');
-        outputToTerminal("Вы успешно вышли из системы.");
+        outputToTerminal("Вы успешно вышли из системы.", false);
         updateAuthUI(); // Обновить текст кнопки и видимость кнопки админ-панели
+        adminModal.style.display = 'none'; // Скрыть админ-модаль, если она была открыта
+        loginModal.style.display = 'none'; // Скрыть логин-модаль, если она вдруг была открыта
     }
 };
 
@@ -325,11 +328,7 @@ function handleDeviceDisplay() {
     } else {
         musicBox.style.display = 'flex';
         systemLogsBox.style.display = 'block';
-        // Видимость кнопки "Admin Panel" управляется updateAuthUI()
-        // Если администратор НЕ вошел, кнопка должна быть видна (по умолчанию)
-        // Если администратор вошел, updateAuthUI() установит ее в 'block'
-        adminPanelButton.style.display = 'block';
-
+        adminPanelButton.style.display = 'block'; // Показываем кнопку админ-панели на ПК
         if (!logInterval) {
             logInterval = setInterval(generateSystemLog, 3000 + Math.random() * 2000);
         }
@@ -340,28 +339,31 @@ function handleDeviceDisplay() {
 
 // --- Инициализация при загрузке страницы ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Попытка воспроизвести музыку (может быть заблокирована браузером)
+    // 1. Попытка воспроизвести музыку (может быть заблокирована браузером)
     music.play().catch(e => {
         console.log("Автовоспроизведение музыки заблокировано:", e);
         musicIcon.textContent = '🔈'; // Показать значок выключенного звука
     });
 
-    updateAndGetViewCount(); // Обновляем счетчик просмотров при загрузке страницы
-    showSection('main'); // Показываем секцию 'main' по умолчанию
+    // 2. Обновляем счетчик просмотров (без отображения на главной)
+    updateAndGetViewCount();
 
-    // Добавляем обработчики кликов для кнопок навигации
+    // 3. СРАЗУ ПОКАЗЫВАЕМ СЕКЦИЮ 'MAIN'
+    showSection('main');
+
+    // 4. Инициализация видимости системных блоков и кнопки админ-панели в зависимости от размера экрана
+    handleDeviceDisplay();
+    window.addEventListener('resize', handleDeviceDisplay);
+
+    // 5. Обработчики кликов для кнопок навигации
     buttons.forEach(button => {
         button.addEventListener('click', () => {
             const targetId = button.dataset.target;
             if (targetId) { // Если это обычная кнопка секции
                 showSection(targetId);
             }
-            // Логика для authButton обрабатывается отдельно
         });
     });
-
-    handleDeviceDisplay(); // Начальная проверка типа устройства
-    window.addEventListener('resize', handleDeviceDisplay); // Повторная проверка при изменении размера окна
 
     // --- ОБРАБОТЧИКИ ДЛЯ КНОПКИ AUTH (LOGIN/LOGOUT) ---
     authButton.addEventListener('click', () => {
@@ -454,7 +456,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Инициализация UI при загрузке, чтобы кнопки были в правильном состоянии
+    // Initial UI update on load (чтобы кнопки были в правильном состоянии)
     updateAuthUI();
 });
 
