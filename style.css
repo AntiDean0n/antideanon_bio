@@ -393,23 +393,27 @@ section pre {
   width: 100%; /* Полная ширина */
   height: 100%; /* Полная высота */
   overflow: auto; /* Включить прокрутку, если содержимое слишком большое */
-  background-color: rgba(0, 0, 0, 0.9); /* Полупрозрачный черный фон */
-  backdrop-filter: blur(5px); /* Эффект размытия фона */
+  background-color: rgba(0, 0, 0, 0.95); /* Более темный полупрозрачный фон */
+  backdrop-filter: blur(8px); /* Усиленный эффект размытия фона */
+  display: flex; /* Используем flexbox для центрирования */
   justify-content: center; /* Центрирование содержимого по горизонтали */
   align-items: center; /* Центрирование содержимого по вертикали */
 }
 
 .modal-content {
-  background: var(--bg-dark);
-  border: 2px solid var(--main-color);
-  box-shadow: 0 0 30px var(--main-color);
-  padding: 30px;
-  border-radius: 10px;
+  background: var(--bg-dark); /* Темный фон из переменной */
+  border: 2px solid var(--main-color); /* Основной цвет для границы */
+  box-shadow:
+    0 0 15px var(--main-color),
+    0 0 30px var(--main-color),
+    0 0 45px var(--accent-color); /* Многослойное неоновое свечение */
+  padding: 35px 40px; /* Увеличил паддинги */
+  border-radius: 12px; /* Скругленные углы */
   width: 90%;
-  max-width: 400px;
+  max-width: 450px; /* Увеличил максимальную ширину */
   text-align: center;
   position: relative;
-  animation: fadeInZoom 0.3s ease-out; /* Анимация появления */
+  animation: fadeInZoom 0.4s ease-out; /* Чуть медленнее анимация появления */
 }
 
 /* Анимация появления модального окна */
@@ -426,69 +430,88 @@ section pre {
 
 .close-button {
   color: var(--accent-color);
-  font-size: 30px;
+  font-size: 36px; /* Увеличил размер */
   font-weight: bold;
   position: absolute;
   top: 10px;
-  right: 15px;
+  right: 20px; /* Отступ справа */
   cursor: pointer;
-  transition: color 0.3s ease;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .close-button:hover,
 .close-button:focus {
   color: var(--main-color);
+  text-shadow: 0 0 15px var(--main-color); /* Добавил свечение при наведении */
   text-decoration: none;
-  cursor: pointer;
 }
 
 .modal-content h2 {
   color: var(--main-color);
-  font-size: 24px;
-  margin-bottom: 25px;
-  text-shadow: 0 0 10px var(--main-color);
+  font-size: 30px; /* Увеличил размер заголовка */
+  margin-bottom: 30px; /* Увеличил отступ */
+  letter-spacing: 0.1em; /* Добавил межбуквенный интервал */
+  text-shadow:
+    0 0 8px var(--main-color),
+    0 0 15px var(--accent-color); /* Эффект свечения для заголовка */
+  text-transform: uppercase;
 }
 
 .modal-content input[type="text"],
 .modal-content input[type="password"] {
   width: calc(100% - 24px); /* Учитываем padding и border */
-  padding: 10px;
-  margin-bottom: 15px;
-  background: rgba(0, 0, 0, 0.5);
+  padding: 12px 15px; /* Увеличил паддинги */
+  margin-bottom: 20px; /* Увеличил отступ */
+  background: rgba(0, 0, 0, 0.6); /* Чуть более темный фон поля ввода */
   border: 1px solid var(--main-color);
   color: var(--main-color);
   font-family: var(--font-mono);
-  font-size: 16px;
-  border-radius: 5px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  font-size: 17px; /* Увеличил размер шрифта */
+  border-radius: 8px; /* Слегка увеличил скругление */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  box-shadow: inset 0 0 5px rgba(var(--main-color), 0.3); /* Внутренняя тень */
 }
 
 .modal-content input[type="text"]:focus,
 .modal-content input[type="password"]:focus {
   border-color: var(--accent-color);
-  box-shadow: 0 0 10px var(--accent-color);
+  box-shadow:
+    0 0 12px var(--accent-color),
+    inset 0 0 8px rgba(var(--accent-color), 0.5); /* Более выраженное свечение */
+  background-color: rgba(0, 0, 0, 0.8); /* Фон темнее при фокусе */
   outline: none;
 }
 
 .modal-content button {
   background: var(--main-color);
-  color: #000;
+  color: #000; /* Черный текст на основном цвете */
   border: none;
-  padding: 12px 30px;
-  border-radius: 5px;
+  padding: 15px 35px; /* Увеличил паддинги */
+  border-radius: 8px; /* Слегка увеличил скругление */
   cursor: pointer;
   font-family: var(--font-mono);
-  font-size: 18px;
+  font-size: 20px; /* Увеличил размер шрифта */
   text-transform: uppercase;
   font-weight: bold;
-  letter-spacing: 0.1em;
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  letter-spacing: 0.12em; /* Увеличил межбуквенный интервал */
+  transition: background 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+  box-shadow: 0 0 10px rgba(var(--main-color), 0.7); /* Легкое свечение кнопки */
 }
 
 .modal-content button:hover {
   background: var(--accent-color);
-  box-shadow: 0 0 15px var(--accent-color);
-  color: #fff; /* Изменяем цвет текста для контраста с акцентным фоном */
+  box-shadow:
+    0 0 15px var(--accent-color),
+    0 0 30px var(--accent-color); /* Усиленное свечение при наведении */
+  color: #fff; /* Белый текст на акцентном фоне для лучшего контраста */
+}
+
+#login-message {
+  color: var(--accent-color); /* Сообщение об ошибке в акцентном цвете */
+  margin-top: 15px; /* Отступ сверху */
+  font-size: 15px; /* Размер шрифта сообщения */
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 5px rgba(var(--accent-color), 0.7); /* Легкое свечение сообщения */
 }
 
 
@@ -558,15 +581,15 @@ section pre {
   }
 
   .modal-content {
-    padding: 20px;
+    padding: 25px 30px; /* Скорректировал паддинги */
   }
   .modal-content h2 {
-    font-size: 20px;
-    margin-bottom: 20px;
+    font-size: 24px; /* Скорректировал размер заголовка */
+    margin-bottom: 25px;
   }
   .modal-content input, .modal-content button {
-    font-size: 14px;
-    padding: 8px;
+    font-size: 15px; /* Скорректировал размер шрифта */
+    padding: 10px;
   }
 }
 
@@ -632,5 +655,21 @@ section pre {
   .terminal-footer {
     height: 35px;
     padding: 0 8px;
+  }
+
+  .modal-content {
+    padding: 20px 25px;
+  }
+  .modal-content h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  .modal-content input, .modal-content button {
+    font-size: 13px;
+    padding: 8px;
+  }
+  .close-button {
+    font-size: 30px;
+    right: 15px;
   }
 }
