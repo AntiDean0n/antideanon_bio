@@ -1,44 +1,45 @@
 // --- Элементы управления звуком ---
 const music = document.getElementById('bg-music');
 const musicIcon = document.getElementById('music-icon');
-const musicBox = document.querySelector('.music-box'); // Получаем элемент music-box
+const musicBox = document.querySelector('.music-box');
 
 // --- Основные элементы интерфейса ---
-const buttons = document.querySelectorAll('nav button'); // Кнопки навигации
-const sections = { // Объект для удобного доступа к секциям по их ID
+const buttons = document.querySelectorAll('nav button');
+const sections = {
     main: document.getElementById('main'),
     deffers: document.getElementById('deffers'),
     price: document.getElementById('price'),
     faq: document.getElementById('faq'),
     contact: document.getElementById('contact')
 };
-const commandInput = document.getElementById('command-input'); // Поле ввода команд
-const logOutput = document.getElementById('log-output'); // Область для системных логов
-const systemLogsBox = document.querySelector('.system-logs'); // Получаем элемент system-logs
+const commandInput = document.getElementById('command-input');
+const logOutput = document.getElementById('log-output');
+const systemLogsBox = document.querySelector('.system-logs');
 
-let currentTypingEffect = null; // Переменная для хранения информации о текущем эффекте набора текста
-let logInterval = null; // Переменная для интервала генерации системных логов
+let currentTypingEffect = null;
+let logInterval = null;
 
-// --- НОВЫЕ ЭЛЕМЕНТЫ ДЛЯ ЛОГИНА И АДМИН-ПАНЕЛИ ---
-const loginButton = document.getElementById('login-button');
+// --- НОВЫЕ/ИЗМЕНЕННЫЕ ЭЛЕМЕНТЫ ДЛЯ ЛОГИНА И АДМИН-ПАНЕЛИ ---
+const authButton = document.getElementById('auth-button'); // Renamed from login-button
 const loginModal = document.getElementById('login-modal');
-const closeButton = loginModal.querySelector('.close-button');
+const adminModal = document.getElementById('admin-modal'); // New admin panel modal
+const closeButtons = document.querySelectorAll('.modal .close-button'); // Selects all close buttons for modals
 const usernameInput = document.getElementById('username-input');
 const passwordInput = document.getElementById('password-input');
 const submitLoginButton = document.getElementById('submit-login');
 const loginMessage = document.getElementById('login-message');
-const adminInfoDiv = document.getElementById('admin-info');
-const viewCountSpan = document.getElementById('view-count');
+const viewCountSpan = document.getElementById('view-count'); // This span is now inside adminModal
+const adminPanelButton = document.getElementById('admin-panel-button'); // New admin panel button
 
 // --- Учетные данные админа (ВНИМАНИЕ: НЕБЕЗОПАСНО!) ---
 const ADMIN_USERNAME = 'fame.antideanon';
-const ADMIN_PASSWORD = 'NeDarkKich22561.*'; // Пароль содержит специальные символы, будьте внимательны при копировании
+const ADMIN_PASSWORD = 'NeDarkKich22561.*';
 
 // --- Функция для увеличения и получения счетчика просмотров ---
 function updateAndGetViewCount() {
     let views = parseInt(localStorage.getItem('siteViews') || 0);
+    // Increment view count only if it's a new session or not already incremented this session
     if (!sessionStorage.getItem('sessionVisited')) {
-        // Увеличиваем счетчик только один раз за сессию (пока открыт браузер)
         views++;
         localStorage.setItem('siteViews', views);
         sessionStorage.setItem('sessionVisited', 'true');
@@ -46,50 +47,60 @@ function updateAndGetViewCount() {
     return views;
 }
 
+// --- Обновление состояния кнопки "Login"/"Logout" и кнопки "Admin Panel" ---
+function updateAuthUI() {
+    const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+    if (isAdminLoggedIn) {
+        authButton.textContent = 'Logout';
+        adminPanelButton.style.display = 'block'; // Show admin panel button
+        viewCountSpan.textContent = localStorage.getItem('siteViews') || '0'; // Update count if modal is shown
+    } else {
+        authButton.textContent = 'Login';
+        adminPanelButton.style.display = 'none'; // Hide admin panel button
+    }
+}
+
+
 // --- Управление фоновой музыкой ---
 function toggleSound() {
     if (music.paused) {
         music.play();
-        musicIcon.textContent = '🔊'; // Иконка громкости
+        musicIcon.textContent = '🔊';
     } else {
         music.pause();
-        musicIcon.textContent = '🔈'; // Иконка тишины
+        musicIcon.textContent = '🔈';
     }
 }
 
 // --- Функция для эффекта набора текста ---
 function typeEffect(element, text, cursorElement) {
-    // Если есть активный эффект набора, останавливаем его и отображаем весь текст
     if (currentTypingEffect) {
         clearInterval(currentTypingEffect.interval);
         currentTypingEffect.element.textContent = currentTypingEffect.fullText;
-        currentTypingEffect.cursor.style.display = 'none'; // Скрываем старый курсор
+        currentTypingEffect.cursor.style.display = 'none';
     }
 
-    element.textContent = ''; // Очищаем содержимое элемента
-    cursorElement.style.display = 'inline-block'; // Показываем курсор
+    element.textContent = '';
+    cursorElement.style.display = 'inline-block';
     let i = 0;
-    const speed = 25; // Скорость набора (мс на символ)
-    const fullText = text.trim(); // Удаляем лишние пробелы в начале/конце
+    const speed = 25;
+    const fullText = text.trim();
 
-    // Запускаем интервал для посимвольного вывода текста
     const interval = setInterval(() => {
         if (i < fullText.length) {
-            element.textContent += fullText.charAt(i); // Добавляем следующий символ
+            element.textContent += fullText.charAt(i);
             i++;
         } else {
-            clearInterval(interval); // Останавливаем интервал, когда текст набран
-            cursorElement.style.display = 'inline-block'; // Показываем курсор после завершения набора
+            clearInterval(interval);
+            cursorElement.style.display = 'inline-block';
         }
     }, speed);
 
-    // Сохраняем информацию о текущем эффекте для возможности его остановки
     currentTypingEffect = { element: element, interval: interval, fullText: fullText, cursor: cursorElement };
 }
 
 // --- Функция для показа определенной секции ---
 function showSection(id) {
-    // Останавливаем активный эффект набора, если пользователь переключает секцию
     if (currentTypingEffect) {
         clearInterval(currentTypingEffect.interval);
         currentTypingEffect.element.textContent = currentTypingEffect.fullText;
@@ -98,7 +109,6 @@ function showSection(id) {
     }
 
     let currentActiveSection = null;
-    // Ищем текущую активную секцию
     for (const key in sections) {
         if (sections[key].classList.contains('active-section')) {
             currentActiveSection = sections[key];
@@ -106,20 +116,16 @@ function showSection(id) {
         }
     }
 
-    // Вспомогательная функция для показа целевой секции
     const showTargetSection = () => {
         const targetSection = sections[id];
         if (!targetSection) {
             console.error("Section not found:", id);
             return;
         }
-        // Сначала делаем видимой (display: block) до добавления active-section,
-        // чтобы переход opacity/transform сработал.
         targetSection.style.display = 'block';
-        targetSection.offsetHeight; // Принудительный reflow для активации CSS-перехода
-        targetSection.classList.add('active-section'); // Добавляем класс для активации стилей показа
+        targetSection.offsetHeight;
+        targetSection.classList.add('active-section');
 
-        // Если секция не 'main', запускаем эффект набора текста
         if (id !== 'main') {
             const preElement = targetSection.querySelector('pre[data-typed-text]');
             const cursorElement = targetSection.querySelector('.typed-cursor');
@@ -127,37 +133,28 @@ function showSection(id) {
                 typeEffect(preElement, preElement.getAttribute('data-typed-text'), cursorElement);
             }
         } else {
-            // Для 'main' секции скрываем курсор, так как там своя анимация 'waiting-line'
             const mainCursor = sections.main.querySelector('.typed-cursor');
             if (mainCursor) mainCursor.style.display = 'none';
-
-            // Показываем админ-информацию, если пользователь залогинен
-            if (localStorage.getItem('isAdminLoggedIn') === 'true') {
-                adminInfoDiv.style.display = 'block';
-                viewCountSpan.textContent = localStorage.getItem('siteViews') || '0';
-            } else {
-                adminInfoDiv.style.display = 'none';
-            }
+            // The admin info is now inside the admin modal, not directly in main section
         }
     };
 
     if (currentActiveSection) {
-        // Если есть активная секция, сначала скрываем ее
         currentActiveSection.classList.remove('active-section');
-        // Добавляем слушатель события transitionend, чтобы скрыть элемент после завершения анимации
         currentActiveSection.addEventListener('transitionend', function handler() {
-            currentActiveSection.style.display = 'none'; // Скрываем элемент после завершения перехода
-            currentActiveSection.removeEventListener('transitionend', handler); // Удаляем слушатель
-            showTargetSection(); // Теперь показываем новую секцию
-        }, { once: true }); // Слушатель сработает только один раз
+            currentActiveSection.style.display = 'none';
+            currentActiveSection.removeEventListener('transitionend', handler);
+            showTargetSection();
+        }, { once: true });
     } else {
-        // Если нет активной секции (например, при первой загрузке страницы), сразу показываем целевую
         showTargetSection();
     }
 
-    // Обновляем активную кнопку навигации
     buttons.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.target === id);
+        // Ensure authButton is not set as active section
+        if (btn.id !== 'auth-button') {
+            btn.classList.toggle('active', btn.dataset.target === id);
+        }
     });
 }
 
@@ -178,7 +175,7 @@ Available commands:
     'show': (args) => {
         const sectionName = args[0];
         if (sections[sectionName]) {
-            showSection(sectionName); // Вызываем функцию показа секции
+            showSection(sectionName);
             outputToTerminal(`Section loaded: ${sectionName.toUpperCase()}.`);
         } else {
             outputToTerminal(`[ERROR] Unknown section: ${sectionName}. Try 'show bio'.`, true);
@@ -187,7 +184,6 @@ Available commands:
     'set theme': (args) => {
         const themeName = args[0];
         const body = document.body;
-        // Удаляем все классы тем, чтобы избежать конфликтов
         body.classList.remove('theme-green', 'theme-red');
 
         if (themeName === 'green') {
@@ -203,7 +199,7 @@ Available commands:
         }
     },
     'clear': () => {
-        logOutput.innerHTML = ''; // Очищаем содержимое логов
+        logOutput.innerHTML = '';
         outputToTerminal("Terminal cleared.");
     },
     'whoami': () => {
@@ -228,47 +224,50 @@ Initiating Text Adventure...
 Welcome, Hacker. You are at a crossroads.
 Type 'left' or 'right'.`);
 
-        let gameActive = true; // Флаг для управления состоянием игры
-        const gameHandler = (e) => { // Временный обработчик для игрового ввода
+        let gameActive = true;
+        const gameHandler = (e) => {
             if (e.key === 'Enter') {
                 const input = commandInput.value.trim().toLowerCase();
-                commandInput.value = ''; // Очищаем поле
+                commandInput.value = '';
                 if (!gameActive) return;
 
                 if (input === 'left') {
                     outputToTerminal("You chose left. You find a data chip. (End of demo game)");
                     gameActive = false;
-                    commandInput.removeEventListener('keydown', gameHandler); // Удаляем обработчик после завершения игры
+                    commandInput.removeEventListener('keydown', gameHandler);
                 } else if (input === 'right') {
                     outputToTerminal("You chose right. A firewall blocks your path. (End of demo game)");
                     gameActive = false;
-                    commandInput.removeEventListener('keydown', gameHandler); // Удаляем обработчик
+                    commandInput.removeEventListener('keydown', gameHandler);
                 } else {
                     outputToTerminal("[GAME] Invalid move. Type 'left' or 'right'.");
                 }
             }
         };
-        commandInput.addEventListener('keydown', gameHandler); // Добавляем временный обработчик событий
+        commandInput.addEventListener('keydown', gameHandler);
     },
     'logout': () => {
         localStorage.removeItem('isAdminLoggedIn');
         outputToTerminal("Logged out successfully.");
-        adminInfoDiv.style.display = 'none'; // Скрываем админ-информацию
-        showSection('main'); // Переключаемся на основную секцию
+        updateAuthUI(); // Update button text and hide admin panel button
+        // No need to show section main, as it's not affected by login status anymore.
     }
 };
 
 
 // --- Функция для вывода сообщений в лог терминала ---
 function outputToTerminal(message, isError = false) {
-    const span = document.createElement('span'); // Создаем новый span-элемент
+    const span = document.createElement('span');
     const timestamp = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    span.textContent = `[${timestamp}] ${message}`; // Добавляем временную метку и сообщение
+    span.textContent = `[${timestamp}] ${message}`;
     if (isError) {
-        span.style.color = 'var(--accent-color)'; // Красим ошибку в акцентный цвет
+        span.style.color = 'var(--accent-color)';
     }
-    logOutput.appendChild(span); // Добавляем сообщение в блок логов
-    logOutput.scrollTop = logOutput.scrollHeight; // Прокручиваем лог до конца
+    logOutput.appendChild(span);
+    if (logOutput.children.length > 50) { // Keep log history to 50 lines
+        logOutput.removeChild(logOutput.children[0]);
+    }
+    logOutput.scrollTop = logOutput.scrollHeight;
 }
 
 // --- Сообщения для системных логов на фоне ---
@@ -303,86 +302,118 @@ function generateSystemLog() {
     span.textContent = `[${timestamp}] ${message}`;
     logOutput.appendChild(span);
 
-    // Ограничиваем количество строк в логах, чтобы не перегружать DOM
     if (logOutput.children.length > 50) {
-        logOutput.removeChild(logOutput.children[0]); // Удаляем самую старую строку
+        logOutput.removeChild(logOutput.children[0]);
     }
-    logOutput.scrollTop = logOutput.scrollHeight; // Прокрутка к последнему сообщению
+    logOutput.scrollTop = logOutput.scrollHeight;
 }
 
 // --- Функция для определения типа устройства и управления видимостью блоков ---
 function handleDeviceDisplay() {
-    // Ширина, при которой считаем устройство "мобильным" (можно настроить)
-    const mobileBreakpoint = 768; // px
+    const mobileBreakpoint = 768;
 
     if (window.innerWidth <= mobileBreakpoint) {
-        // Мобильное устройство: скрываем music-box и system-logs
         musicBox.style.display = 'none';
         systemLogsBox.style.display = 'none';
-        // Очищаем интервал логов, чтобы не расходовать ресурсы, когда они не видны
+        adminPanelButton.style.display = 'none'; // Hide admin button on mobile too
         if (logInterval) {
             clearInterval(logInterval);
             logInterval = null;
         }
     } else {
-        // ПК: показываем music-box и system-logs
-        musicBox.style.display = 'flex'; // Предполагаем, что изначально music-box имеет display: flex
-        systemLogsBox.style.display = 'block'; // Предполагаем, что изначально system-logs имеет display: block
-        // Возобновляем генерацию логов, если ее нет
+        musicBox.style.display = 'flex';
+        systemLogsBox.style.display = 'block';
+        // Show admin button only if admin is logged out or if it's the default state (not logged in)
+        // If logged in, its display is handled by updateAuthUI()
+        if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
+             adminPanelButton.style.display = 'block';
+        } else {
+             adminPanelButton.style.display = 'none'; // Will be shown when admin logs out
+        }
+
         if (!logInterval) {
             logInterval = setInterval(generateSystemLog, 3000 + Math.random() * 2000);
         }
     }
+    updateAuthUI(); // Always update UI on resize to reflect login status
 }
 
 
 // --- Инициализация при загрузке страницы ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Пытаемся воспроизвести музыку автоматически.
-    // Браузеры могут блокировать автовоспроизведение без взаимодействия пользователя.
     music.play().catch(e => {
         console.log("Autoplay music failed:", e);
-        musicIcon.textContent = '🔈'; // Если автовоспроизведение не сработало, показываем иконку "выключен звук"
+        musicIcon.textContent = '🔈';
     });
 
-    // Обновляем счетчик просмотров при каждой загрузке страницы
-    updateAndGetViewCount();
-
-    showSection('main'); // Показываем 'main' секцию по умолчанию при загрузке
+    updateAndGetViewCount(); // Update view count regardless of login status
+    showSection('main'); // Show 'main' section by default
 
     // Добавляем обработчики кликов для кнопок навигации
     buttons.forEach(button => {
         button.addEventListener('click', () => {
-            const targetId = button.dataset.target; // Получаем ID целевой секции из data-атрибута
-            if (targetId) { // Проверяем, что data-target существует (для кнопок секций)
-                showSection(targetId); // Вызываем функцию показа секции
+            const targetId = button.dataset.target;
+            // Handle regular section buttons
+            if (targetId) {
+                showSection(targetId);
             }
+            // Logic for authButton is handled separately
         });
     });
 
-    // Вызываем функцию определения типа устройства при загрузке
-    handleDeviceDisplay();
-    // Добавляем слушатель события изменения размера окна
-    window.addEventListener('resize', handleDeviceDisplay);
+    handleDeviceDisplay(); // Initial device check
+    window.addEventListener('resize', handleDeviceDisplay); // Re-check on resize
 
-
-    // --- ОБРАБОТЧИКИ ДЛЯ ЛОГИНА ---
-    loginButton.addEventListener('click', () => {
-        loginModal.style.display = 'flex'; // Показываем модальное окно
-        usernameInput.value = ''; // Очищаем поля
-        passwordInput.value = '';
-        loginMessage.textContent = ''; // Очищаем сообщение об ошибке
-        usernameInput.focus(); // Устанавливаем фокус на поле логина
+    // --- ОБРАБОТЧИКИ ДЛЯ КНОПКИ AUTH (LOGIN/LOGOUT) ---
+    authButton.addEventListener('click', () => {
+        const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+        if (isAdminLoggedIn) {
+            // If logged in, click means logout
+            localStorage.removeItem('isAdminLoggedIn');
+            outputToTerminal("Logged out successfully.");
+            updateAuthUI(); // Update UI after logout
+            // Admin Panel button will appear again
+        } else {
+            // If not logged in, click means show login modal
+            loginModal.style.display = 'flex';
+            usernameInput.value = '';
+            passwordInput.value = '';
+            loginMessage.textContent = '';
+            usernameInput.focus();
+        }
     });
 
-    closeButton.addEventListener('click', () => {
-        loginModal.style.display = 'none'; // Скрываем модальное окно
+    // --- ОБРАБОТЧИКИ ДЛЯ КНОПКИ ADMIN PANEL ---
+    adminPanelButton.addEventListener('click', () => {
+        const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+        if (isAdminLoggedIn) {
+            // If admin is already logged in, show admin panel
+            adminModal.style.display = 'flex';
+            viewCountSpan.textContent = localStorage.getItem('siteViews') || '0'; // Ensure view count is updated
+        } else {
+            // If not logged in, show login modal
+            loginModal.style.display = 'flex';
+            usernameInput.value = '';
+            passwordInput.value = '';
+            loginMessage.textContent = '';
+            usernameInput.focus();
+        }
     });
 
-    // Закрытие модального окна по клику вне его содержимого
+    // --- ОБРАБОТЧИКИ ЗАКРЫТИЯ МОДАЛЬНЫХ ОКОН ---
+    closeButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.target.closest('.modal').style.display = 'none';
+        });
+    });
+
+    // Закрытие модальных окон по клику вне их содержимого
     window.addEventListener('click', (event) => {
         if (event.target === loginModal) {
             loginModal.style.display = 'none';
+        }
+        if (event.target === adminModal) {
+            adminModal.style.display = 'none';
         }
     });
 
@@ -392,11 +423,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const password = passwordInput.value;
 
         if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-            localStorage.setItem('isAdminLoggedIn', 'true'); // Сохраняем статус входа
+            localStorage.setItem('isAdminLoggedIn', 'true');
             loginModal.style.display = 'none';
             outputToTerminal("Admin login successful. Welcome, Antideanon!", false);
-            showSection('main'); // Переключаемся на главную секцию, чтобы обновить отображение
-            // Обновляем отображение счетчика просмотров
+            updateAuthUI(); // Update UI after successful login
+            adminModal.style.display = 'flex'; // Automatically show admin panel after login
             viewCountSpan.textContent = localStorage.getItem('siteViews') || '0';
         } else {
             loginMessage.textContent = 'Access Denied: Invalid credentials.';
@@ -410,26 +441,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обработка Enter в поле логина: переводит фокус на поле пароля
     usernameInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Предотвращаем стандартное поведение Enter (отправка формы)
-            passwordInput.focus(); // Переводим фокус на поле пароля
+            e.preventDefault();
+            passwordInput.focus();
         }
     });
 
     // Обработка Enter в поле пароля: вызывает функцию логина
     passwordInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Предотвращаем стандартное поведение Enter
-            handleLogin(); // Вызываем функцию логина
+            e.preventDefault();
+            handleLogin();
         }
     });
+
+    // Initial UI update on load
+    updateAuthUI();
 });
 
 // --- Глитч эффект для кнопок навигации (при наведении) ---
 buttons.forEach(button => {
     button.addEventListener('mouseover', () => {
-        button.style.filter = 'url(#glitch)'; // Применяем SVG-фильтр
+        button.style.filter = 'url(#glitch)';
     });
     button.addEventListener('mouseout', () => {
-        button.style.filter = 'none'; // Удаляем фильтр
+        button.style.filter = 'none';
     });
 });
