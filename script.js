@@ -20,16 +20,16 @@ let currentTypingEffect = null;
 let logInterval = null;
 
 // --- НОВЫЕ/ИЗМЕНЕННЫЕ ЭЛЕМЕНТЫ ДЛЯ ЛОГИНА И АДМИН-ПАНЕЛИ ---
-const authButton = document.getElementById('auth-button'); // Renamed from login-button
-const loginModal = document.getElementById('login-modal');
-const adminModal = document.getElementById('admin-modal'); // New admin panel modal
-const closeButtons = document.querySelectorAll('.modal .close-button'); // Selects all close buttons for modals
+const authButton = document.getElementById('auth-button'); // Кнопка "Login"/"Logout" сверху
+const loginModal = document.getElementById('login-modal'); // Модальное окно логина
+const adminModal = document.getElementById('admin-modal'); // Модальное окно админ-панели
+const closeButtons = document.querySelectorAll('.modal .close-button'); // Все кнопки закрытия модальных окон
 const usernameInput = document.getElementById('username-input');
 const passwordInput = document.getElementById('password-input');
 const submitLoginButton = document.getElementById('submit-login');
 const loginMessage = document.getElementById('login-message');
-const viewCountSpan = document.getElementById('view-count'); // This span is now inside adminModal
-const adminPanelButton = document.getElementById('admin-panel-button'); // New admin panel button
+const viewCountSpan = document.getElementById('view-count'); // Span для счетчика просмотров внутри adminModal
+const adminPanelButton = document.getElementById('admin-panel-button'); // Кнопка "Admin Panel" снизу
 
 // --- Учетные данные админа (ВНИМАНИЕ: НЕБЕЗОПАСНО!) ---
 const ADMIN_USERNAME = 'fame.antideanon';
@@ -38,7 +38,7 @@ const ADMIN_PASSWORD = 'NeDarkKich22561.*';
 // --- Функция для увеличения и получения счетчика просмотров ---
 function updateAndGetViewCount() {
     let views = parseInt(localStorage.getItem('siteViews') || 0);
-    // Increment view count only if it's a new session or not already incremented this session
+    // Увеличиваем счетчик просмотров только если это новая сессия или не было увеличено в этой сессии
     if (!sessionStorage.getItem('sessionVisited')) {
         views++;
         localStorage.setItem('siteViews', views);
@@ -52,11 +52,15 @@ function updateAuthUI() {
     const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
     if (isAdminLoggedIn) {
         authButton.textContent = 'Logout';
-        adminPanelButton.style.display = 'block'; // Show admin panel button
-        viewCountSpan.textContent = localStorage.getItem('siteViews') || '0'; // Update count if modal is shown
+        // Кнопка "Admin Panel" всегда видна на ПК, ее видимость на мобильных управляется handleDeviceDisplay
+        if (window.innerWidth > 768) { // Показывать только на больших экранах
+             adminPanelButton.style.display = 'block';
+        }
+        viewCountSpan.textContent = localStorage.getItem('siteViews') || '0'; // Обновляем счетчик
     } else {
         authButton.textContent = 'Login';
-        adminPanelButton.style.display = 'none'; // Hide admin panel button
+        adminPanelButton.style.display = 'block'; // Всегда показывать кнопку "Admin Panel" по умолчанию (на ПК)
+                                                // Для мобильных скрытие будет в handleDeviceDisplay
     }
 }
 
@@ -135,7 +139,6 @@ function showSection(id) {
         } else {
             const mainCursor = sections.main.querySelector('.typed-cursor');
             if (mainCursor) mainCursor.style.display = 'none';
-            // The admin info is now inside the admin modal, not directly in main section
         }
     };
 
@@ -151,7 +154,7 @@ function showSection(id) {
     }
 
     buttons.forEach(btn => {
-        // Ensure authButton is not set as active section
+        // Убедимся, что authButton не становится активной секцией
         if (btn.id !== 'auth-button') {
             btn.classList.toggle('active', btn.dataset.target === id);
         }
@@ -162,23 +165,23 @@ function showSection(id) {
 const commands = {
     'help': () => {
         outputToTerminal(`
-Available commands:
-    show <section>  - Displays a section (e.g., show bio, show deffers, show price, show faq, show contact)
-    set theme <color> - Changes the terminal theme (e.g., set theme green, set theme red, set theme default)
-    clear           - Clears the terminal output
-    whoami          - Displays information about you (Easter egg)
-    ping            - Tests network connectivity (dummy)
-    play game       - Launches a simple text-based game (Easter egg)
-    logout          - Logs out from admin panel (if logged in)
+Доступные команды:
+    show <section>  - Отображает секцию (напр., show bio, show deffers, show price, show faq, show contact)
+    set theme <color> - Меняет тему терминала (напр., set theme green, set theme red, set theme default)
+    clear           - Очищает вывод терминала
+    whoami          - Отображает информацию о вас (Пасхалка)
+    ping            - Проверяет сетевое соединение (фиктивно)
+    play game       - Запускает простую текстовую игру (Пасхалка)
+    logout          - Выходит из админ-панели (если вошли)
         `);
     },
     'show': (args) => {
         const sectionName = args[0];
         if (sections[sectionName]) {
             showSection(sectionName);
-            outputToTerminal(`Section loaded: ${sectionName.toUpperCase()}.`);
+            outputToTerminal(`Секция загружена: ${sectionName.toUpperCase()}.`);
         } else {
-            outputToTerminal(`[ERROR] Unknown section: ${sectionName}. Try 'show bio'.`, true);
+            outputToTerminal(`[ОШИБКА] Неизвестная секция: ${sectionName}. Попробуйте 'show bio'.`, true);
         }
     },
     'set theme': (args) => {
@@ -188,41 +191,41 @@ Available commands:
 
         if (themeName === 'green') {
             body.classList.add('theme-green');
-            outputToTerminal(`Theme set to GREEN.`);
+            outputToTerminal(`Тема установлена на ЗЕЛЕНЫЙ.`);
         } else if (themeName === 'red') {
             body.classList.add('theme-red');
-            outputToTerminal(`Theme set to RED.`);
+            outputToTerminal(`Тема установлена на КРАСНЫЙ.`);
         } else if (themeName === 'default') {
-            outputToTerminal(`Theme set to DEFAULT.`);
+            outputToTerminal(`Тема установлена на ПО УМОЛЧАНИЮ.`);
         } else {
-            outputToTerminal(`[ERROR] Invalid theme: ${themeName}. Available: green, red, default.`, true);
+            outputToTerminal(`[ОШИБКА] Неверная тема: ${themeName}. Доступно: green, red, default.`, true);
         }
     },
     'clear': () => {
         logOutput.innerHTML = '';
-        outputToTerminal("Terminal cleared.");
+        outputToTerminal("Терминал очищен.");
     },
     'whoami': () => {
         const isAdmin = localStorage.getItem('isAdminLoggedIn') === 'true';
         outputToTerminal(`
-You are a visitor in the Antideanon Cyber Terminal.
-Your IP: ${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}
-Status: ${isAdmin ? 'Authenticated Administrator' : 'Authenticated Guest'}.
-Access Level: ${isAdmin ? 'Administrator' : 'Standard'}.
+Вы посетитель Кибер-терминала Antideanon.
+Ваш IP: ${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}
+Статус: ${isAdmin ? 'Аутентифицированный Администратор' : 'Аутентифицированный Гость'}.
+Уровень доступа: ${isAdmin ? 'Администратор' : 'Стандартный'}.
 `);
     },
     'ping': () => {
-        outputToTerminal("Pinging 8.8.8.8 with 32 bytes of data...");
-        setTimeout(() => outputToTerminal("Reply from 8.8.8.8: bytes=32 time=1ms TTL=118"), 500);
-        setTimeout(() => outputToTerminal("Reply from 8.8.8.8: bytes=32 time=2ms TTL=118"), 1000);
-        setTimeout(() => outputToTerminal("Reply from 8.8.8.8: bytes=32 time=1ms TTL=118"), 1500);
-        setTimeout(() => outputToTerminal("Ping statistics for 8.8.8.8:\n    Packets: Sent = 3, Received = 3, Lost = 0 (0% loss),\nApproximate round trip times in milli-seconds:\n    Minimum = 1ms, Maximum = 2ms, Average = 1ms"), 2000);
+        outputToTerminal("Пинг 8.8.8.8 с 32 байтами данных...");
+        setTimeout(() => outputToTerminal("Ответ от 8.8.8.8: байты=32 время=1мс TTL=118"), 500);
+        setTimeout(() => outputToTerminal("Ответ от 8.8.8.8: байты=32 время=2мс TTL=118"), 1000);
+        setTimeout(() => outputToTerminal("Ответ от 8.8.8.8: байты=32 время=1мс TTL=118"), 1500);
+        setTimeout(() => outputToTerminal("Статистика пинга для 8.8.8.8:\n    Пакетов: Отправлено = 3, Получено = 3, Потеряно = 0 (0% потерь),\nПриблизительное время приема-передачи в миллисекундах:\n    Минимум = 1мс, Максимум = 2мс, Среднее = 1мс"), 2000);
     },
     'play game': () => {
         outputToTerminal(`
-Initiating Text Adventure...
-Welcome, Hacker. You are at a crossroads.
-Type 'left' or 'right'.`);
+Инициализация текстового приключения...
+Добро пожаловать, Хакер. Вы на распутье.
+Наберите 'left' или 'right'.`);
 
         let gameActive = true;
         const gameHandler = (e) => {
@@ -232,15 +235,15 @@ Type 'left' or 'right'.`);
                 if (!gameActive) return;
 
                 if (input === 'left') {
-                    outputToTerminal("You chose left. You find a data chip. (End of demo game)");
+                    outputToTerminal("Вы выбрали 'left'. Вы нашли чип данных. (Конец демо-игры)");
                     gameActive = false;
                     commandInput.removeEventListener('keydown', gameHandler);
                 } else if (input === 'right') {
-                    outputToTerminal("You chose right. A firewall blocks your path. (End of demo game)");
+                    outputToTerminal("Вы выбрали 'right'. Брандмауэр блокирует ваш путь. (Конец демо-игры)");
                     gameActive = false;
                     commandInput.removeEventListener('keydown', gameHandler);
                 } else {
-                    outputToTerminal("[GAME] Invalid move. Type 'left' or 'right'.");
+                    outputToTerminal("[ИГРА] Неверный ход. Наберите 'left' или 'right'.");
                 }
             }
         };
@@ -248,9 +251,8 @@ Type 'left' or 'right'.`);
     },
     'logout': () => {
         localStorage.removeItem('isAdminLoggedIn');
-        outputToTerminal("Logged out successfully.");
-        updateAuthUI(); // Update button text and hide admin panel button
-        // No need to show section main, as it's not affected by login status anymore.
+        outputToTerminal("Вы успешно вышли из системы.");
+        updateAuthUI(); // Обновить текст кнопки и видимость кнопки админ-панели
     }
 };
 
@@ -264,7 +266,7 @@ function outputToTerminal(message, isError = false) {
         span.style.color = 'var(--accent-color)';
     }
     logOutput.appendChild(span);
-    if (logOutput.children.length > 50) { // Keep log history to 50 lines
+    if (logOutput.children.length > 50) { // Ограничиваем историю логов до 50 строк
         logOutput.removeChild(logOutput.children[0]);
     }
     logOutput.scrollTop = logOutput.scrollHeight;
@@ -272,25 +274,25 @@ function outputToTerminal(message, isError = false) {
 
 // --- Сообщения для системных логов на фоне ---
 const systemLogMessages = [
-    "SCANNING NETWORK_INTEGRITY_PROTOCOLS...",
-    "STATUS: ALL_MODULES_ONLINE.",
-    "DATA_STREAM_INITIATED: PORT 443.",
-    "DECRYPTING_PACKET_SEQUENCE_0xAF32...",
-    "TRAFFIC_ANALYSIS: LOW_LATENCY_DETECTION.",
-    "SECURE_CONNECTION_ESTABLISHED.",
-    "MONITORING_ANOMALY_DETECTION_SYSTEMS.",
-    "PROTOCOL_HANDSHAKE_COMPLETE.",
-    "PROCESSING_REQUEST_0xBE1C...",
-    "FIREWALL_STATUS: OPTIMAL_PERFORMANCE.",
-    "ENCRYPTING_OUTGOING_DATA_PACKETS...",
-    "SYSTEM_HEALTH: NOMINAL.",
-    "CHECKING_ACCESS_LOGS_FOR_INTRUSIONS...",
-    "IDLE_MODE_ACTIVATED. POWER_SAVE: 75%.",
-    "UPDATING_THREAT_DATABASE_VERSION_4.7.1...",
-    "ALERT: NO_THREATS_DETECTED.",
-    "ROUTING_THROUGH_SECURE_PROXY_NODE_B9C.",
-    "GENERATING_ENCRYPTION_KEYS...",
-    "SYNCHRONIZING_SYSTEM_CLOCK_WITH_NTP_SERVER."
+    "СКАНЕРИРОВАНИЕ_ПРОТОКОЛОВ_ЦЕЛОСТНОСТИ_СЕТИ...",
+    "СТАТУС: ВСЕ_МОДУЛИ_ОНЛАЙН.",
+    "ПОТОК_ДАННЫХ_ИНИЦИИРОВАН: ПОРТ 443.",
+    "ДЕШИФРОВКА_ПОСЛЕДОВАТЕЛЬНОСТИ_ПАКЕТОВ_0xAF32...",
+    "АНАЛИЗ_ТРАФИКА: ОБНАРУЖЕНИЕ_НИЗКОЙ_ЗАТОРМОЖЕННОСТИ.",
+    "УСТАНОВЛЕНО_БЕЗОПАСНОЕ_СОЕДИНЕНИЕ.",
+    "МОНИТОРИНГ_СИСТЕМ_ОБНАРУЖЕНИЯ_АНОМАЛИЙ.",
+    "РУКОПОЖАТИЕ_ПРОТОКОЛА_ЗАВЕРШЕНО.",
+    "ОБРАБОТКА_ЗАПРОСА_0xBE1C...",
+    "СТАТУС_ФАЕРВОЛА: ОПТИМАЛЬНАЯ_ПРОИЗВОДИТЕЛЬНОСТЬ.",
+    "ШИФРОВАНИЕ_ИСХОДЯЩИХ_ПАКЕТОВ_ДАННЫХ...",
+    "СОСТОЯНИЕ_СИСТЕМЫ: НОРМАЛЬНО.",
+    "ПРОВЕРКА_ЖУРНАЛОВ_ДОСТУПА_НА_НАЛИЧИЕ_ВТОРЖЕНИЙ...",
+    "РЕЖИМ_ОЖИДАНИЯ_АКТИВИРОВАН. ЭНЕРГОСБЕРЕЖЕНИЕ: 75%.",
+    "ОБНОВЛЕНИЕ_БАЗЫ_ДАННЫХ_УГРОЗ_ВЕРСИИ_4.7.1...",
+    "ВНИМАНИЕ: УГРОЗ_НЕ_ОБНАРУЖЕНО.",
+    "МАРШРУТИЗАЦИЯ_ЧЕРЕЗ_БЕЗОПАСНЫЙ_ПРОКСИ_УЗЕЛ_B9C.",
+    "ГЕНЕРАЦИЯ_КЛЮЧЕЙ_ШИФРОВАНИЯ...",
+    "СИНХРОНИЗАЦИЯ_СИСТЕМНОГО_ВРЕМЕНИ_С_NTP_СЕРВЕРОМ."
 ];
 
 // --- Функция для генерации случайных системных логов ---
@@ -315,7 +317,7 @@ function handleDeviceDisplay() {
     if (window.innerWidth <= mobileBreakpoint) {
         musicBox.style.display = 'none';
         systemLogsBox.style.display = 'none';
-        adminPanelButton.style.display = 'none'; // Hide admin button on mobile too
+        adminPanelButton.style.display = 'none'; // Скрываем кнопку админ-панели на мобильных
         if (logInterval) {
             clearInterval(logInterval);
             logInterval = null;
@@ -323,63 +325,61 @@ function handleDeviceDisplay() {
     } else {
         musicBox.style.display = 'flex';
         systemLogsBox.style.display = 'block';
-        // Show admin button only if admin is logged out or if it's the default state (not logged in)
-        // If logged in, its display is handled by updateAuthUI()
-        if (localStorage.getItem('isAdminLoggedIn') !== 'true') {
-             adminPanelButton.style.display = 'block';
-        } else {
-             adminPanelButton.style.display = 'none'; // Will be shown when admin logs out
-        }
+        // Видимость кнопки "Admin Panel" управляется updateAuthUI()
+        // Если администратор НЕ вошел, кнопка должна быть видна (по умолчанию)
+        // Если администратор вошел, updateAuthUI() установит ее в 'block'
+        adminPanelButton.style.display = 'block';
 
         if (!logInterval) {
             logInterval = setInterval(generateSystemLog, 3000 + Math.random() * 2000);
         }
     }
-    updateAuthUI(); // Always update UI on resize to reflect login status
+    updateAuthUI(); // Всегда обновляем UI при изменении размера окна, чтобы отразить статус логина
 }
 
 
 // --- Инициализация при загрузке страницы ---
 document.addEventListener('DOMContentLoaded', () => {
+    // Попытка воспроизвести музыку (может быть заблокирована браузером)
     music.play().catch(e => {
-        console.log("Autoplay music failed:", e);
-        musicIcon.textContent = '🔈';
+        console.log("Автовоспроизведение музыки заблокировано:", e);
+        musicIcon.textContent = '🔈'; // Показать значок выключенного звука
     });
 
-    updateAndGetViewCount(); // Update view count regardless of login status
-    showSection('main'); // Show 'main' section by default
+    updateAndGetViewCount(); // Обновляем счетчик просмотров при загрузке страницы
+    showSection('main'); // Показываем секцию 'main' по умолчанию
 
     // Добавляем обработчики кликов для кнопок навигации
     buttons.forEach(button => {
         button.addEventListener('click', () => {
             const targetId = button.dataset.target;
-            // Handle regular section buttons
-            if (targetId) {
+            if (targetId) { // Если это обычная кнопка секции
                 showSection(targetId);
             }
-            // Logic for authButton is handled separately
+            // Логика для authButton обрабатывается отдельно
         });
     });
 
-    handleDeviceDisplay(); // Initial device check
-    window.addEventListener('resize', handleDeviceDisplay); // Re-check on resize
+    handleDeviceDisplay(); // Начальная проверка типа устройства
+    window.addEventListener('resize', handleDeviceDisplay); // Повторная проверка при изменении размера окна
 
     // --- ОБРАБОТЧИКИ ДЛЯ КНОПКИ AUTH (LOGIN/LOGOUT) ---
     authButton.addEventListener('click', () => {
         const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
         if (isAdminLoggedIn) {
-            // If logged in, click means logout
+            // Если вошли, клик означает выход
             localStorage.removeItem('isAdminLoggedIn');
-            outputToTerminal("Logged out successfully.");
-            updateAuthUI(); // Update UI after logout
-            // Admin Panel button will appear again
+            outputToTerminal("Вы успешно вышли из системы.", false);
+            updateAuthUI(); // Обновляем UI после выхода
+            adminModal.style.display = 'none'; // Скрываем админ-панель при выходе
+            loginModal.style.display = 'none'; // Скрываем логин-модаль, если она вдруг была открыта
         } else {
-            // If not logged in, click means show login modal
+            // Если не вошли, клик означает показать модальное окно логина
             loginModal.style.display = 'flex';
-            usernameInput.value = '';
+            usernameInput.value = ''; // Очищаем поля
             passwordInput.value = '';
-            loginMessage.textContent = '';
-            usernameInput.focus();
+            loginMessage.textContent = ''; // Очищаем сообщения об ошибках
+            usernameInput.focus(); // Устанавливаем фокус на поле логина
         }
     });
 
@@ -387,16 +387,16 @@ document.addEventListener('DOMContentLoaded', () => {
     adminPanelButton.addEventListener('click', () => {
         const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
         if (isAdminLoggedIn) {
-            // If admin is already logged in, show admin panel
+            // Если админ уже вошел, показать админ-панель
             adminModal.style.display = 'flex';
-            viewCountSpan.textContent = localStorage.getItem('siteViews') || '0'; // Ensure view count is updated
+            viewCountSpan.textContent = localStorage.getItem('siteViews') || '0'; // Убедиться, что счетчик обновлен
         } else {
-            // If not logged in, show login modal
+            // Если не вошел, показать модальное окно логина
             loginModal.style.display = 'flex';
-            usernameInput.value = '';
+            usernameInput.value = ''; // Очищаем поля
             passwordInput.value = '';
-            loginMessage.textContent = '';
-            usernameInput.focus();
+            loginMessage.textContent = ''; // Очищаем сообщения об ошибках
+            usernameInput.focus(); // Устанавливаем фокус
         }
     });
 
@@ -424,14 +424,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
             localStorage.setItem('isAdminLoggedIn', 'true');
-            loginModal.style.display = 'none';
-            outputToTerminal("Admin login successful. Welcome, Antideanon!", false);
-            updateAuthUI(); // Update UI after successful login
-            adminModal.style.display = 'flex'; // Automatically show admin panel after login
-            viewCountSpan.textContent = localStorage.getItem('siteViews') || '0';
+            loginModal.style.display = 'none'; // Закрываем модальное окно логина
+            outputToTerminal("Вход администратора успешен. Добро пожаловать, Antideanon!", false);
+            updateAuthUI(); // Обновляем UI после успешного логина (кнопка Logout, показать Admin Panel)
+            adminModal.style.display = 'flex'; // Открываем модальное окно админ-панели сразу после логина
+            viewCountSpan.textContent = localStorage.getItem('siteViews') || '0'; // Обновляем счетчик
         } else {
-            loginMessage.textContent = 'Access Denied: Invalid credentials.';
-            outputToTerminal("[ERROR] Attempted unauthorized access.", true);
+            loginMessage.textContent = 'Доступ запрещен: Неверные учетные данные.';
+            outputToTerminal("[ОШИБКА] Попытка несанкционированного доступа.", true);
         }
     };
 
@@ -454,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initial UI update on load
+    // Инициализация UI при загрузке, чтобы кнопки были в правильном состоянии
     updateAuthUI();
 });
 
