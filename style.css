@@ -394,7 +394,7 @@ section pre {
   height: 100%; /* Полная высота */
   overflow: auto; /* Включить прокрутку, если содержимое слишком большое */
   background-color: rgba(0, 0, 0, 0.95); /* Более темный полупрозрачный фон */
-  backdrop-filter: blur(8px); /* Усиленный эффект размытия фона */
+  backdrop-filter: blur(8px); /* Эффект размытия фона */
   display: flex; /* Используем flexbox для центрирования */
   justify-content: center; /* Центрирование содержимого по горизонтали */
   align-items: center; /* Центрирование содержимого по вертикали */
@@ -455,6 +455,7 @@ section pre {
     0 0 8px var(--main-color),
     0 0 15px var(--accent-color); /* Эффект свечения для заголовка */
   text-transform: uppercase;
+  **text-align: center; /* Убедитесь, что это есть */**
 }
 
 .modal-content input[type="text"],
