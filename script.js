@@ -52,14 +52,12 @@ function updateAuthUI() {
     const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
     if (isAdminLoggedIn) {
         authButton.textContent = 'Logout';
-        // Кнопка "Admin Panel" всегда видна на ПК, ее видимость на мобильных управляется handleDeviceDisplay
-        // Нет необходимости устанавливать display здесь, это сделает handleDeviceDisplay
+        // Видимость adminPanelButton управляется handleDeviceDisplay, чтобы соответствовать размеру экрана
     } else {
         authButton.textContent = 'Login';
-        // Кнопка "Admin Panel" всегда видна на ПК, ее видимость на мобильных управляется handleDeviceDisplay
     }
     // Обновляем счетчик в админ-панели, только если она открыта
-    if (adminModal.style.display === 'flex') {
+    if (adminModal.classList.contains('active-modal')) { // Используем класс для проверки видимости
         viewCountSpan.textContent = localStorage.getItem('siteViews') || '0';
     }
 }
@@ -254,8 +252,8 @@ const commands = {
         localStorage.removeItem('isAdminLoggedIn');
         outputToTerminal("Вы успешно вышли из системы.", false);
         updateAuthUI(); // Обновить текст кнопки и видимость кнопки админ-панели
-        adminModal.style.display = 'none'; // Скрыть админ-модаль, если она была открыта
-        loginModal.style.display = 'none'; // Скрыть логин-модаль, если она вдруг была открыта
+        adminModal.classList.remove('active-modal'); // Скрыть админ-модаль
+        loginModal.classList.remove('active-modal'); // Скрыть логин-модаль
     }
 };
 
@@ -339,17 +337,17 @@ function handleDeviceDisplay() {
 
 // --- Инициализация при загрузке страницы ---
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Попытка воспроизвести музыку (может быть заблокирована браузером)
+    // 1. СРАЗУ ПОКАЗЫВАЕМ СЕКЦИЮ 'MAIN'
+    showSection('main');
+
+    // 2. Попытка воспроизвести музыку (может быть заблокирована браузером)
     music.play().catch(e => {
         console.log("Автовоспроизведение музыки заблокировано:", e);
         musicIcon.textContent = '🔈'; // Показать значок выключенного звука
     });
 
-    // 2. Обновляем счетчик просмотров (без отображения на главной)
+    // 3. Обновляем счетчик просмотров (без отображения на главной)
     updateAndGetViewCount();
-
-    // 3. СРАЗУ ПОКАЗЫВАЕМ СЕКЦИЮ 'MAIN'
-    showSection('main');
 
     // 4. Инициализация видимости системных блоков и кнопки админ-панели в зависимости от размера экрана
     handleDeviceDisplay();
@@ -373,11 +371,11 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('isAdminLoggedIn');
             outputToTerminal("Вы успешно вышли из системы.", false);
             updateAuthUI(); // Обновляем UI после выхода
-            adminModal.style.display = 'none'; // Скрываем админ-панель при выходе
-            loginModal.style.display = 'none'; // Скрываем логин-модаль, если она вдруг была открыта
+            adminModal.classList.remove('active-modal'); // Скрываем админ-панель при выходе
+            loginModal.classList.remove('active-modal'); // Скрываем логин-модаль, если она вдруг была открыта
         } else {
             // Если не вошли, клик означает показать модальное окно логина
-            loginModal.style.display = 'flex';
+            loginModal.classList.add('active-modal'); // Добавляем класс для показа
             usernameInput.value = ''; // Очищаем поля
             passwordInput.value = '';
             loginMessage.textContent = ''; // Очищаем сообщения об ошибках
@@ -390,11 +388,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
         if (isAdminLoggedIn) {
             // Если админ уже вошел, показать админ-панель
-            adminModal.style.display = 'flex';
+            adminModal.classList.add('active-modal'); // Добавляем класс для показа
             viewCountSpan.textContent = localStorage.getItem('siteViews') || '0'; // Убедиться, что счетчик обновлен
         } else {
             // Если не вошел, показать модальное окно логина
-            loginModal.style.display = 'flex';
+            loginModal.classList.add('active-modal'); // Добавляем класс для показа
             usernameInput.value = ''; // Очищаем поля
             passwordInput.value = '';
             loginMessage.textContent = ''; // Очищаем сообщения об ошибках
@@ -405,17 +403,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- ОБРАБОТЧИКИ ЗАКРЫТИЯ МОДАЛЬНЫХ ОКОН ---
     closeButtons.forEach(button => {
         button.addEventListener('click', (event) => {
-            event.target.closest('.modal').style.display = 'none';
+            event.target.closest('.modal').classList.remove('active-modal'); // Удаляем класс для скрытия
         });
     });
 
     // Закрытие модальных окон по клику вне их содержимого
     window.addEventListener('click', (event) => {
         if (event.target === loginModal) {
-            loginModal.style.display = 'none';
+            loginModal.classList.remove('active-modal');
         }
         if (event.target === adminModal) {
-            adminModal.style.display = 'none';
+            adminModal.classList.remove('active-modal');
         }
     });
 
@@ -426,10 +424,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
             localStorage.setItem('isAdminLoggedIn', 'true');
-            loginModal.style.display = 'none'; // Закрываем модальное окно логина
+            loginModal.classList.remove('active-modal'); // Закрываем модальное окно логина
             outputToTerminal("Вход администратора успешен. Добро пожаловать, Antideanon!", false);
             updateAuthUI(); // Обновляем UI после успешного логина (кнопка Logout, показать Admin Panel)
-            adminModal.style.display = 'flex'; // Открываем модальное окно админ-панели сразу после логина
+            adminModal.classList.add('active-modal'); // Открываем модальное окно админ-панели сразу после логина
             viewCountSpan.textContent = localStorage.getItem('siteViews') || '0'; // Обновляем счетчик
         } else {
             loginMessage.textContent = 'Доступ запрещен: Неверные учетные данные.';
@@ -456,7 +454,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initial UI update on load (чтобы кнопки были в правильном состоянии)
+    // Инициализация UI при загрузке, чтобы кнопки были в правильном состоянии
     updateAuthUI();
 });
 
