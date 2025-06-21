@@ -1,152 +1,255 @@
 <!DOCTYPE html>
+
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8" />
-    <title>Antideanon - CyberSecurity</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css">
+
+  <meta charset="UTF-8" />
+
+  <title>Antideanon - CyberSecurity</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css">
+
 </head>
+
 <body>
 
-    <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
-        <filter id="glitch">
-            <feTurbulence type="fractalNoise" baseFrequency="0.05 0.005" numOctaves="1" result="noise1" />
-            <feTurbulence type="fractalNoise" baseFrequency="0.05 0.005" numOctaves="1" result="displacement1" />
-            <feTurbulence type="fractalNoise" baseFrequency="0.05 0.005" numOctaves="1" result="noise2" />
-            <feDisplacementMap in="SourceGraphic" in2="noise1" scale="10" xChannelSelector="R" yChannelSelector="B" result="displacement1" />
-            <feDisplacementMap in="SourceGraphic" in2="noise2" scale="-10" xChannelSelector="R" yChannelSelector="B" result="displacement2" />
-            <feBlend in="displacement1" in2="displacement2" mode="multiply" />
-        </filter>
-    </svg>
 
-    <nav>
-        <button data-target="main" class="active">Antideanon BIO</button>
-        <button data-target="deffers">Antideanon Deffers</button>
-        <button data-target="price">Antideanon Price</button>
-        <button data-target="faq">FAQ</button>
-        <button data-target="contact">Contacts</button>
-        <button id="auth-button">Login</button>
-    </nav>
 
-    <div class="music-box" onclick="toggleSound()" title="Toggle sound">
-        <div id="music-icon">🔊</div>
-        <div id="music-title">Music</div>
-    </div>
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden;">
 
-    <audio id="bg-music" src="music.mp3" autoplay loop></audio>
+    <filter id="glitch">
 
-    <div class="container">
-        <section id="main">
-            <img src="avatar.jpg" alt="Avatar" class="avatar" />
-            <h1>ANTIDEANON BIO</h1>
-            <p class="main-subtitle">The Antideanon - CyberSecurity</p>
-            <div class="info-line"><span class="info-label">My name:</span><span class="info-value">fame.antideanon</span></div>
-            <div class="info-line"><span class="info-label">My Telegram:</span><span class="info-value">@fame_antideanon</span></div>
-            <div class="info-line"><span class="info-label">My Playlist:</span><span class="info-value"><a href="https://t.me/antideanon_playlist" target="_blank" rel="noopener noreferrer">Click Here</a></span></div>
-            <p class="waiting-line">LOADING...</p>
-        </section>
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.005" numOctaves="1" result="noise1" />
 
-        <section id="deffers">
-            <h1>Antideanon Deffers</h1>
-            <pre data-typed-text="
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.005" numOctaves="1" result="noise2" />
+
+      <feDisplacementMap in="SourceGraphic" in2="noise1" scale="10" xChannelSelector="R" yChannelSelector="B" result="displacement1" />
+
+      <feDisplacementMap in="SourceGraphic" in2="noise2" scale="-10" xChannelSelector="R" yChannelSelector="B" result="displacement2" />
+
+      <feBlend in="displacement1" in2="displacement2" mode="multiply" />
+
+    </filter>
+
+  </svg>
+
+
+
+  <nav>
+
+    <button data-target="main" class="active">Antideanon BIO</button>
+
+    <button data-target="deffers">Antideanon Deffers</button>
+
+    <button data-target="price">Antideanon Price</button>
+
+    <button data-target="faq">FAQ</button>
+
+    <button data-target="contact">Contacts</button>
+
+  </nav>
+
+
+
+  <div class="music-box" onclick="toggleSound()" title="Toggle sound">
+
+    <div id="music-icon">🔊</div>
+
+    <div id="music-title">Music</div>
+
+  </div>
+
+
+
+  <audio id="bg-music" src="music.mp3" autoplay loop></audio>
+
+
+
+  <div class="container">
+
+    <section id="main">
+
+      <img src="avatar.jpg" alt="Avatar" class="avatar" />
+
+      <h1>ANTIDEANON BIO</h1>
+
+      <p class="main-subtitle">The Antideanon - CyberSecurity</p>
+
+      <div class="info-line"><span class="info-label">My name:</span><span class="info-value">fame.antideanon</span></div>
+
+      <div class="info-line"><span class="info-label">My Telegram:</span><span class="info-value">@fame_antideanon</span></div>
+
+      <div class="info-line"><span class="info-label">My Playlist:</span><span class="info-value"><a href="https://t.me/antideanon_playlist" target="_blank" rel="noopener noreferrer">Click Here</a></span></div>
+
+      <p class="waiting-line">LOADING...</p>
+
+    </section>
+
+
+
+    <section id="deffers">
+
+      <h1>Antideanon Deffers</h1>
+
+      <pre data-typed-text="
+
 ┣ Telegram: @Princovv
+
 ┣ Telegram: @rucccb
+
 ┣ Telegram: @ipvebov
+
 ┗ Telegram: @worldsnosed
-            "></pre>
-            <span class="typed-cursor">_</span>
-        </section>
 
-        <section id="price">
-            <h1>Price List</h1>
-            <pre data-typed-text="
-┣ Деанон по номер        — от 150₽
-┣ Деанон по нику          — от 200₽
-┣ Деанон по IP            — от 300₽
-┗ Деанон по Telegram ID   — от 250₽
+      "></pre>
 
-┣ Защита на неделю        : 100₽  | 100 TG Stars
-┣ Защита на месяц         : 250₽  | 250 TG Stars
-┣ Защита на 2 месяца      : 300₽  | 400 TG Stars
-┗ Защита навсегда         : 500₽  | 550 TG Stars
+      <span class="typed-cursor">_</span>
 
-┣ Консультация            — от 500₽ | 500 TG Stars
-┣ Настройка VPN           — от 300₽ | 300 TG Stars
-┣ Проверка уязвимостей    — от 400₽ | 400 TG Stars
-┣ Анонимизация сервисов   — от 350₽ | 350 TG Stars
-┗ Аудит приватности       — от 450₽ | 450 TG Stars
-            "></pre>
-            <span class="typed-cursor">_</span>
-        </section>
+    </section>
 
-        <section id="faq">
-            <h1>Frequently Asked Questions</h1>
-            <pre data-typed-text="
+
+
+    <section id="price">
+
+      <h1>Price List</h1>
+
+      <pre data-typed-text="
+
+┣ Деанон по номеру       — от 150₽
+
+┣ Деанон по нику         — от 200₽
+
+┣ Деанон по IP           — от 300₽
+
+┗ Деанон по Telegram ID  — от 250₽
+
+
+
+┣ Защита на неделю       : 100₽  | 100 TG Stars
+
+┣ Защита на месяц        : 250₽  | 250 TG Stars
+
+┣ Защита на 2 месяца     : 300₽  | 400 TG Stars
+
+┗ Защита навсегда        : 500₽  | 550 TG Stars
+
+
+
+┣ Консультация           — от 500₽ | 500 TG Stars
+
+┣ Настройка VPN          — от 300₽ | 300 TG Stars
+
+┣ Проверка уязвимостей   — от 400₽ | 400 TG Stars
+
+┣ Анонимизация сервисов  — от 350₽ | 350 TG Stars
+
+┗ Аудит приватности      — от 450₽ | 450 TG Stars
+
+      "></pre>
+
+      <span class="typed-cursor">_</span>
+
+    </section>
+
+
+
+    <section id="faq">
+
+      <h1>Frequently Asked Questions</h1>
+
+      <pre data-typed-text="
+
 Q: Сколько времени занимает деанон?
+
 A: Обычно от 30 минут до нескольких часов, в зависимости от сложности.
 
+
+
 Q: Гарантируется ли анонимность клиента?
+
 A: Да, мы используем шифрованные каналы и строго соблюдаем конфиденциальность.
 
+
+
 Q: Какие способы оплаты доступны?
+
 A: Принимаем CryptoBot, Bitcoin, Litecoin, USDT а также TG Stars.
 
+
+
 Q: Что делать, если деанон не удался?
+
 A: В случае неудачи, мы вернем средства или предложим альтернативное решение.
 
-Q: Есть ли скидки для постоянных клиентов?
-A: Да, для постоянных клиентов предусмотрены специальные условия и скидки.
-            "></pre>
-            <span class="typed-cursor">_</span>
-        </section>
 
-        <section id="contact">
-            <h1>Contact Us</h1>
-            <pre data-typed-text="
+
+Q: Есть ли скидки для постоянных клиентов?
+
+A: Да, для постоянных клиентов предусмотрены специальные условия и скидки.
+
+      "></pre>
+
+      <span class="typed-cursor">_</span>
+
+    </section>
+
+
+
+    <section id="contact">
+
+      <h1>Contact Us</h1>
+
+      <pre data-typed-text="
+
 Для заказа услуг или консультации:
 
+
+
 ┣ Telegram: @fame_antideanon
-┣ Support:  @AntiDeanonSupport_Bot
-┗ Email:    antideanon@tuta.io (фиктивный)
+
+┣ Support:  @AntiDeanonSupport_Bot
+
+┗ Email:    antideanon@tuta.io (фиктивный)
+
+
 
 Мы онлайн 24/7. Обращайтесь по любым вопросам кибербезопасности.
-            "></pre>
-            <span class="typed-cursor">_</span>
-        </section>
-    </div>
 
-    <div class="system-logs">
-        <div id="log-output"></div>
-    </div>
+      "></pre>
 
-    <button id="admin-panel-button" class="floating-button">Admin Panel</button>
+      <span class="typed-cursor">_</span>
 
-    <div class="terminal-footer">
-        <span class="prompt">></span>
-        <input type="text" id="command-input" autofocus>
-    </div>
+    </section>
 
-    <div id="login-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2>Admin Login</h2>
-            <input type="text" id="username-input" placeholder="Login" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            <input type="password" id="password-input" placeholder="Password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            <button id="submit-login">Enter</button>
-            <p id="login-message" style="color: var(--accent-color); margin-top: 10px;"></p>
-        </div>
-    </div>
+  </div>
 
-    <div id="admin-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2>Admin Panel</h2>
-            <p>Welcome, Administrator!</p>
-            <p>Total site views: <span id="view-count">0</span></p>
-        </div>
-    </div>
 
-    <script src="script.js"></script>
+
+  <div class="system-logs">
+
+    <div id="log-output"></div>
+
+  </div>
+
+
+
+  <div class="terminal-footer">
+
+    <span class="prompt">></span>
+
+    <input type="text" id="command-input" autofocus>
+
+  </div>
+
+
+
+  <script src="script.js"></script>
+
 </body>
+
 </html>
