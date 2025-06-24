@@ -490,27 +490,34 @@ section pre {
   border-radius: 5px;
 }
 
+/* --- Медиа-запросы для адаптивности --- */
 
-/* Медиа-запросы для адаптивности на разных устройствах */
+/* Для планшетов и больших телефонов (ширина до 768px) */
 @media (max-width: 768px) {
+  nav {
+    height: auto; /* Высота авто, чтобы кнопки могли переноситься */
+    flex-wrap: wrap; /* Разрешаем кнопкам переноситься на новую строку */
+    padding: 5px 0; /* Уменьшаем отступы */
+  }
+
   nav button {
     font-size: 12px;
     padding: 8px 15px;
-    margin: 0 5px;
+    margin: 5px 5px; /* Увеличиваем вертикальный отступ */
   }
 
   .container {
-    margin: 70px auto 100px auto;
-    padding: 0 10px;
+    margin: 70px auto 100px auto; /* Уменьшаем отступы сверху */
+    padding: 0 15px;
   }
 
   section {
-    padding: 20px 25px 30px;
-    width: calc(100% - 50px);
+    padding: 25px 30px 35px; /* Уменьшаем внутренние отступы */
+    width: calc(100% - 60px); /* Ширина с учетом новых паддингов */
   }
 
   section h1 {
-    font-size: 24px;
+    font-size: 26px; /* Чуть уменьшаем заголовки */
   }
 
   .avatar {
@@ -518,27 +525,146 @@ section pre {
     height: 100px;
   }
 
-  .main-subtitle, .info-line, section pre,
-  .music-box {
-    font-size: 14px;
+  .main-subtitle {
+    font-size: 16px;
   }
 
   .info-line {
-    max-width: 90%;
+    font-size: 14px;
+    max-width: 90%; /* Позволяем занимать больше ширины */
   }
 
   .music-box {
     width: 90px;
     height: 90px;
     top: 60px;
-    left: 10px;
+    left: 15px;
+  }
+
+  #music-icon {
+    font-size: 16px;
+  }
+
+  #music-title {
+    font-size: 10px;
   }
 
   .system-logs {
+    width: calc(100% - 30px); /* Ширина с учетом отступов */
+    left: 15px;
+    height: 90px; /* Уменьшаем высоту */
+    bottom: 60px; /* Поднимаем выше футера */
+  }
+
+  .terminal-footer {
+    height: 45px; /* Чуть уменьшаем высоту футера */
+    padding: 0 15px;
+  }
+
+  .terminal-footer .prompt {
+    font-size: 16px;
+    margin-right: 8px;
+  }
+
+  #command-input {
+    font-size: 14px;
+  }
+
+  /* OSINT Specific */
+  .osint-tools {
+    flex-direction: column; /* Кнопки OSINT в столбик */
+    gap: 15px;
+  }
+
+  .osint-btn {
+    width: 90%; /* Занимают почти всю ширину */
+    max-width: 350px; /* Но не слишком широкие */
+    padding: 10px 20px;
+  }
+
+  .osint-input-area {
+    flex-direction: column; /* Поле ввода и кнопка в столбик */
+    gap: 10px;
+  }
+
+  #osint-input, #osint-submit-btn {
+    width: calc(90% - 30px); /* Учитываем паддинг */
+    max-width: 380px;
+  }
+
+  #osint-results {
+    font-size: 14px;
+    padding: 12px;
+  }
+}
+
+/* Для самых маленьких телефонов (ширина до 480px) */
+@media (max-width: 480px) {
+  nav button {
+    font-size: 10px;
+    padding: 6px 10px;
+    margin: 3px 3px;
+  }
+
+  .container {
+    margin: 60px auto 90px auto;
+    padding: 0 10px;
+  }
+
+  section {
+    padding: 20px 20px 25px;
     width: calc(100% - 40px);
-    left: 20px;
+  }
+
+  section h1 {
+    font-size: 22px;
+    margin-bottom: 15px;
+  }
+
+  .avatar {
+    width: 80px;
     height: 80px;
-    bottom: 60px;
+  }
+
+  .main-subtitle {
+    font-size: 14px;
+  }
+
+  .info-line {
+    font-size: 12px;
+  }
+
+  .waiting-line {
+    font-size: 14px;
+  }
+
+  .music-box {
+    width: 80px;
+    height: 80px;
+    top: 55px;
+    left: 10px;
+  }
+
+  #music-icon {
+    font-size: 14px;
+  }
+
+  #music-title {
+    font-size: 9px;
+  }
+
+  section pre {
+    font-size: 13px;
+    line-height: 1.3em;
+    min-height: 120px;
+  }
+
+  .system-logs {
+    width: calc(100% - 20px);
+    left: 10px;
+    height: 70px;
+    bottom: 55px;
+    font-size: 10px;
   }
 
   .terminal-footer {
@@ -547,36 +673,30 @@ section pre {
   }
 
   .terminal-footer .prompt {
-    font-size: 16px;
-  }
-
-  #command-input {
     font-size: 14px;
   }
 
-  .osint-tools {
-    flex-direction: column;
-    align-items: center;
+  #command-input {
+    font-size: 12px;
   }
 
+  /* OSINT Specific */
   .osint-btn {
-    width: 80%;
+    font-size: 14px;
+    padding: 8px 15px;
+    width: 95%; /* Ещё больше ширины */
     max-width: 300px;
-    margin-bottom: 10px;
   }
 
-  .osint-input-area {
-    flex-direction: column;
-    gap: 10px;
+  #osint-input, #osint-submit-btn {
+    font-size: 14px;
+    padding: 8px 12px;
+    width: calc(95% - 24px);
+    max-width: 350px;
   }
 
-  #osint-input {
-    width: calc(100% - 30px); /* 100% минус padding */
-    max-width: 90%;
-  }
-
-  #osint-submit-btn {
-    width: calc(100% - 30px); /* 100% минус padding */
-    max-width: 90%;
+  #osint-results {
+    font-size: 12px;
+    padding: 10px;
   }
 }
