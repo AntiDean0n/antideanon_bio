@@ -23,24 +23,6 @@ const osintIpBtn = document.getElementById('search-ip-btn');
 // Помните, что при использовании CORS-прокси, этот ключ всё ещё виден в коде браузера.
 const NUMVERIFY_API_KEY = 'b1a2969c8ecb83a7f0d6d2ca159e6819';
 
-// --- Вспомогательные функции валидации ---
-function isValidPhoneNumber(input) {
-  // Простая валидация: начинается с '+' и содержит только цифры, допустимые символы номера.
-  // Можно сделать более строгую регулярку, но для начала этого хватит.
-  return /^\+[0-9\s-()]{7,25}$/.test(input);
-}
-
-function isValidIpAddress(input) {
-  // Валидация IPv4 (простая)
-  const ipv4Regex = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
-  if (ipv4Regex.test(input)) {
-    return input.split('.').every(segment => parseInt(segment, 10) >= 0 && parseInt(segment, 10) <= 255);
-  }
-  // Валидация IPv6 (очень простая, можно улучшить)
-  const ipv6Regex = /^[0-9a-fA-F:\.]{2,45}$/; // Базовая проверка на символы IPv6
-  return ipv6Regex.test(input);
-}
-
 // --- Функции эффектов и логики ---
 
 // Функция для вывода текста в лог
@@ -96,9 +78,9 @@ function showSection(id) {
         // Для всех, кроме OSINT, запускаем эффект печати
         typeEffect(preElement, preElement.getAttribute('data-typed-text'), cursorElement);
       } else if (id === 'osint') {
-        // Для OSINT секции сбрасываем состояние и устанавливаем начальный текст
+        // Для OSINT секции устанавливаем начальное состояние
         currentOsintMode = ''; // Сбрасываем выбранный режим
-        osintInput.placeholder = 'Выберите тип поиска'; // Общий плейсхолдер
+        osintInput.placeholder = 'Введите номер телефона или IP-адрес'; // Общий плейсхолдер
         osintResults.textContent = `
 Выберите тип поиска и введите данные, чтобы получить информацию.
 Например:
@@ -107,10 +89,6 @@ function showSection(id) {
         `; // Начальный текст
         osintInput.value = ''; // Очищаем поле ввода
         osintInputArea.style.display = 'flex'; // Убедимся, что поле ввода видно
-
-        // Убираем активные стили с кнопок OSINT
-        osintPhoneBtn.classList.remove('active');
-        osintIpBtn.classList.remove('active');
       }
     } else {
       // Для 'main' секции скрываем курсор
@@ -153,35 +131,18 @@ osintPhoneBtn.addEventListener('click', () => {
   currentOsintMode = 'phone';
   osintInputArea.style.display = 'flex';
   osintInput.placeholder = 'Введите номер телефона (например, +1234567890)';
-  osintInput.value = ''; // Очищаем поле ввода
-  osintResults.textContent = `
-Выбран режим "Поиск по номеру".
-Введите полный номер телефона, включая международный код страны,
-например, +1234567890 для США или +79001234567 для России.
-Нажмите "Искать" для получения информации.
-  `; // Специальный текст для режима "Поиск по номеру"
+  osintResults.textContent = '';
+  osintInput.value = '';
   outputToTerminal("Режим OSINT: Поиск по номеру. Введите номер и нажмите Искать.");
-
-  // Управление активными классами кнопок
-  osintPhoneBtn.classList.add('active');
-  osintIpBtn.classList.remove('active');
 });
 
 osintIpBtn.addEventListener('click', () => {
   currentOsintMode = 'ip';
   osintInputArea.style.display = 'flex';
   osintInput.placeholder = 'Введите IP-адрес (например, 8.8.8.8)';
-  osintInput.value = ''; // Очищаем поле ввода
-  osintResults.textContent = `
-Выбран режим "Поиск по IP".
-Введите IP-адрес в формате IPv4 (например, 8.8.8.8) или IPv6.
-Нажмите "Искать" для получения геолокации и другой информации.
-  `; // Специальный текст для режима "Поиск по IP"
+  osintResults.textContent = '';
+  osintInput.value = '';
   outputToTerminal("Режим OSINT: Поиск по IP. Введите IP и нажмите Искать.");
-
-  // Управление активными классами кнопок
-  osintIpBtn.classList.add('active');
-  osintPhoneBtn.classList.remove('active');
 });
 
 // Обработчик кнопки "Искать"
@@ -196,7 +157,7 @@ osintSubmitBtn.addEventListener('click', () => {
 });
 
 
-// Функция выполнения поиска OSINT с использованием CORS-прокси и валидацией
+// Функция выполнения поиска OSINT с использованием CORS-прокси
 async function performOsintSearch(query) {
   osintResults.textContent = 'Поиск...';
   outputToTerminal(`Выполняется OSINT поиск для: "${query}"...`);
@@ -205,20 +166,12 @@ async function performOsintSearch(query) {
   let errorMessage = 'Ошибка при выполнении поиска.';
 
   if (currentOsintMode === 'phone') {
-    if (!isValidPhoneNumber(query)) {
-      osintResults.textContent = 'Ошибка: Неверный формат номера телефона. Используйте формат: +1234567890.';
-      outputToTerminal('Ошибка: Неверный формат номера телефона.');
-      return;
-    }
+    // Формируем URL для NumVerify через corsproxy.io
     const numverifyBaseUrl = `http://apilayer.net/api/validate?access_key=${NUMVERIFY_API_KEY}&number=${encodeURIComponent(query)}&country_code=&format=1`;
     apiUrl = `https://corsproxy.io/?${encodeURIComponent(numverifyBaseUrl)}`;
     errorMessage = 'Ошибка при поиске номера: Проверьте правильность номера или доступность сервиса.';
   } else if (currentOsintMode === 'ip') {
-    if (!isValidIpAddress(query)) {
-      osintResults.textContent = 'Ошибка: Неверный формат IP-адреса. Используйте формат: 8.8.8.8 или валидный IPv6.';
-      outputToTerminal('Ошибка: Неверный формат IP-адреса.');
-      return;
-    }
+    // Формируем URL для ip-api.com через corsproxy.io
     const ipApiBaseUrl = `http://ip-api.com/json/${encodeURIComponent(query)}?fields=status,message,query,country,countryCode,region,regionName,city,zip,lat,lon,timezone,offset,isp,org,as,asname,mobile,proxy,hosting`;
     apiUrl = `https://corsproxy.io/?${encodeURIComponent(ipApiBaseUrl)}`;
     errorMessage = 'Ошибка при поиске IP: Проверьте правильность IP или доступность сервиса.';
@@ -252,11 +205,9 @@ function displayOsintResults(data) {
       resultText += `Локальный формат: ${data.local_format || 'N/A'}\n`;
       resultText += `Международный формат: ${data.international_format || 'N/A'}\n`;
       resultText += `Страна: ${data.country_name || 'N/A'} (${data.country_code || 'N/A'})\n`;
-      if (data.location && data.location !== data.country_name) {
-        resultText += `Регион/Город: ${data.location || 'N/A'}\n`;
-      }
       resultText += `Оператор: ${data.carrier || 'N/A'}\n`;
       resultText += `Тип линии: ${data.line_type || 'N/A'}\n`;
+      if (data.location) resultText += `Примерное расположение: ${data.location}\n`;
     } else {
       resultText += `Статус: ❌ Невалидный номер или ошибка API.\n`;
       if (data.error) {
@@ -364,29 +315,14 @@ function processCommand(command) {
   }
 }
 
-// --- Детектор устройства ---
-function detectDevice() {
-  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-  if (/android|ipad|iphone|ipod|windows phone/i.test(userAgent) ||
-      (navigator.maxTouchPoints > 0 && /Mobi|Tablet|Safari/i.test(userAgent)) || // Учитываем Safari на iPad
-      (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) // Проверяем сенсорный экран
-     ) {
-    document.body.classList.add('device-mobile');
-    outputToTerminal('Обнаружено мобильное устройство.');
-  } else {
-    document.body.classList.add('device-desktop');
-    outputToTerminal('Обнаружено настольное устройство.');
-  }
-}
-
 // Инициализация
 document.addEventListener('DOMContentLoaded', () => {
-  detectDevice(); // Определяем устройство при загрузке
   showSection('main'); // Показываем главную секцию при загрузке
   outputToTerminal('Система загружена. Введите "help" для списка команд.');
 
-  // Изначально показываем input area и начальное сообщение для OSINT секции
-  // (только если она активна, но для начальной загрузки это безопасно)
+  // Изначально показываем input area и сообщение для OSINT секции
+  // Это сделано здесь, чтобы при первом переходе на OSINT секцию,
+  // она не казалась пустой до выбора режима.
   osintInputArea.style.display = 'flex';
   osintResults.textContent = `
 Выберите тип поиска и введите данные, чтобы получить информацию.
