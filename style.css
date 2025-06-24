@@ -414,6 +414,15 @@ section pre {
   transform: translateY(-2px);
 }
 
+/* Новый стиль для активной кнопки OSINT */
+.osint-btn.active {
+    background-color: var(--main-color); /* Основной цвет */
+    color: var(--bg-dark); /* Темный текст на основном фоне */
+    box-shadow: 0 0 25px var(--accent-color), inset 0 0 10px var(--accent-color);
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+}
+
 .osint-input-area {
   display: flex;
   justify-content: center;
