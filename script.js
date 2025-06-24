@@ -96,7 +96,7 @@ function showSection(id) {
         // Для всех, кроме OSINT, запускаем эффект печати
         typeEffect(preElement, preElement.getAttribute('data-typed-text'), cursorElement);
       } else if (id === 'osint') {
-        // Для OSINT секции сбрасываем состояние
+        // Для OSINT секции сбрасываем состояние и устанавливаем начальный текст
         currentOsintMode = ''; // Сбрасываем выбранный режим
         osintInput.placeholder = 'Выберите тип поиска'; // Общий плейсхолдер
         osintResults.textContent = `
@@ -153,8 +153,13 @@ osintPhoneBtn.addEventListener('click', () => {
   currentOsintMode = 'phone';
   osintInputArea.style.display = 'flex';
   osintInput.placeholder = 'Введите номер телефона (например, +1234567890)';
-  osintResults.textContent = '';
-  osintInput.value = '';
+  osintInput.value = ''; // Очищаем поле ввода
+  osintResults.textContent = `
+Выбран режим "Поиск по номеру".
+Введите полный номер телефона, включая международный код страны,
+например, +1234567890 для США или +79001234567 для России.
+Нажмите "Искать" для получения информации.
+  `; // Специальный текст для режима "Поиск по номеру"
   outputToTerminal("Режим OSINT: Поиск по номеру. Введите номер и нажмите Искать.");
 
   // Управление активными классами кнопок
@@ -166,8 +171,12 @@ osintIpBtn.addEventListener('click', () => {
   currentOsintMode = 'ip';
   osintInputArea.style.display = 'flex';
   osintInput.placeholder = 'Введите IP-адрес (например, 8.8.8.8)';
-  osintResults.textContent = '';
-  osintInput.value = '';
+  osintInput.value = ''; // Очищаем поле ввода
+  osintResults.textContent = `
+Выбран режим "Поиск по IP".
+Введите IP-адрес в формате IPv4 (например, 8.8.8.8) или IPv6.
+Нажмите "Искать" для получения геолокации и другой информации.
+  `; // Специальный текст для режима "Поиск по IP"
   outputToTerminal("Режим OSINT: Поиск по IP. Введите IP и нажмите Искать.");
 
   // Управление активными классами кнопок
@@ -355,14 +364,29 @@ function processCommand(command) {
   }
 }
 
+// --- Детектор устройства ---
+function detectDevice() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  if (/android|ipad|iphone|ipod|windows phone/i.test(userAgent) ||
+      (navigator.maxTouchPoints > 0 && /Mobi|Tablet|Safari/i.test(userAgent)) || // Учитываем Safari на iPad
+      (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) // Проверяем сенсорный экран
+     ) {
+    document.body.classList.add('device-mobile');
+    outputToTerminal('Обнаружено мобильное устройство.');
+  } else {
+    document.body.classList.add('device-desktop');
+    outputToTerminal('Обнаружено настольное устройство.');
+  }
+}
+
 // Инициализация
 document.addEventListener('DOMContentLoaded', () => {
+  detectDevice(); // Определяем устройство при загрузке
   showSection('main'); // Показываем главную секцию при загрузке
   outputToTerminal('Система загружена. Введите "help" для списка команд.');
 
-  // Изначально показываем input area и сообщение для OSINT секции
-  // Это сделано здесь, чтобы при первом переходе на OSINT секцию,
-  // она не казалась пустой до выбора режима.
+  // Изначально показываем input area и начальное сообщение для OSINT секции
+  // (только если она активна, но для начальной загрузки это безопасно)
   osintInputArea.style.display = 'flex';
   osintResults.textContent = `
 Выберите тип поиска и введите данные, чтобы получить информацию.
