@@ -24,7 +24,7 @@
     <button data-target="deffers">Antideanon Deffers</button>
     <button data-target="price">Antideanon Price</button>
     <button data-target="faq">FAQ</button>
-    <button data-target="contact">Contacts</button>
+    <button data-target="osint">OSINT Tools</button> <button data-target="contact">Contacts</button>
   </nav>
 
   <div class="music-box" onclick="toggleSound()" title="Toggle sound">
@@ -99,6 +99,19 @@ A: Да, для постоянных клиентов предусмотрены
       <span class="typed-cursor">_</span>
     </section>
 
+    <section id="osint">
+      <h1>OSINT Tools</h1>
+      <div class="osint-tools">
+        <button id="search-phone-btn" class="osint-btn">Search by Phone</button>
+        <button id="search-ip-btn" class="osint-btn">Search by IP</button>
+      </div>
+      <div class="osint-input-area" style="display: none;">
+        <input type="text" id="osint-input" placeholder="Enter phone number or IP address">
+        <button id="osint-submit-btn">Search</button>
+      </div>
+      <pre id="osint-results"></pre>
+      <span class="typed-cursor">_</span>
+    </section>
     <section id="contact">
       <h1>Contact Us</h1>
       <pre data-typed-text="
