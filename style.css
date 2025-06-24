@@ -518,125 +518,65 @@ section pre {
     height: 100px;
   }
 
-  .main-subtitle, .info-line, section pre, #command-input {
+  .main-subtitle, .info-line, section pre,
+  .music-box {
     font-size: 14px;
   }
 
-  .waiting-line {
-    font-size: 14px;
+  .info-line {
+    max-width: 90%;
   }
 
   .music-box {
     width: 90px;
     height: 90px;
-    top: 55px;
+    top: 60px;
     left: 10px;
-  }
-
-  #music-icon {
-    font-size: 16px;
-  }
-  #music-title {
-    font-size: 10px;
   }
 
   .system-logs {
-    bottom: 70px;
-    left: 10px;
-    width: calc(100% - 40px); /* Расширяем на всю ширину */
-    max-height: 80px; /* Делаем чуть ниже */
+    width: calc(100% - 40px);
+    left: 20px;
+    height: 80px;
+    bottom: 60px;
   }
 
   .terminal-footer {
     height: 40px;
     padding: 0 10px;
   }
+
   .terminal-footer .prompt {
     font-size: 16px;
-    margin-right: 5px;
   }
-}
 
-@media (max-width: 600px) {
+  #command-input {
+    font-size: 14px;
+  }
+
   .osint-tools {
     flex-direction: column;
-    gap: 10px;
+    align-items: center;
   }
+
   .osint-btn {
     width: 80%;
-    margin: 0 auto;
+    max-width: 300px;
+    margin-bottom: 10px;
   }
+
   .osint-input-area {
     flex-direction: column;
     gap: 10px;
   }
-  #osint-input, #osint-submit-btn {
-    width: 80%;
-    margin: 0 auto;
-  }
-}
 
-@media (max-width: 480px) {
-  nav {
-    height: 40px;
-  }
-  nav button {
-    font-size: 10px;
-    padding: 6px 10px;
-    margin: 0 3px;
+  #osint-input {
+    width: calc(100% - 30px); /* 100% минус padding */
+    max-width: 90%;
   }
 
-  .container {
-    margin: 50px auto 80px auto;
-  }
-
-  section {
-    padding: 15px 20px 20px;
-    width: calc(100% - 40px);
-  }
-
-  section h1 {
-    font-size: 20px;
-  }
-
-  .avatar {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 15px;
-  }
-
-  .main-subtitle {
-    font-size: 16px;
-    margin: 5px 0 20px 0;
-  }
-
-  .info-line, section pre, #command-input {
-    font-size: 13px;
-  }
-
-  .music-box {
-    width: 70px;
-    height: 70px;
-    top: 45px;
-    left: 5px;
-  }
-
-  #music-icon {
-    font-size: 14px;
-  }
-  #music-title {
-    font-size: 9px;
-  }
-
-  .system-logs {
-    bottom: 60px;
-    left: 5px;
-    width: calc(100% - 30px);
-    max-height: 70px;
-  }
-
-  .terminal-footer {
-    height: 35px;
-    padding: 0 8px;
+  #osint-submit-btn {
+    width: calc(100% - 30px); /* 100% минус padding */
+    max-width: 90%;
   }
 }
