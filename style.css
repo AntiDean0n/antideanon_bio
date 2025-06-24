@@ -501,32 +501,167 @@ section pre {
 
 /* --- Медиа-запросы для адаптивности --- */
 
-/* Для планшетов и больших телефонов (ширина до 768px) */
-@media (max-width: 768px) {
+/* Стилизация для мобильных устройств (класс device-mobile) */
+body.device-mobile {
+  /* Уменьшаем высоту навигации для мобильных */
   nav {
-    height: auto; /* Высота авто, чтобы кнопки могли переноситься */
-    flex-wrap: wrap; /* Разрешаем кнопкам переноситься на новую строку */
-    padding: 5px 0; /* Уменьшаем отступы */
+    height: 40px;
+    padding: 3px 0;
+  }
+  nav button {
+    font-size: 10px;
+    padding: 6px 10px;
+    margin: 2px 2px;
+  }
+
+  /* Уменьшаем основной контейнер и секции */
+  .container {
+    margin: 55px auto 80px auto;
+    padding: 0 10px;
+  }
+  section {
+    padding: 15px 15px 20px;
+    width: calc(100% - 30px);
+  }
+  section h1 {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  /* Уменьшаем аватар и подзаголовок */
+  .avatar {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 15px;
+  }
+  .main-subtitle {
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  /* Информационные строки */
+  .info-line {
+    font-size: 11px;
+    margin: 6px 0;
+    padding-bottom: 2px;
+    max-width: 95%;
+  }
+
+  /* Строка загрузки */
+  .waiting-line {
+    font-size: 12px;
+    width: 12ch;
+  }
+
+  /* Музыкальный блок */
+  .music-box {
+    width: 70px;
+    height: 70px;
+    top: 50px;
+    left: 8px;
+    border-width: 1px;
+  }
+  #music-icon {
+    font-size: 12px;
+    margin-bottom: 4px;
+  }
+  #music-title {
+    font-size: 8px;
+  }
+
+  /* pre-блоки */
+  section pre {
+    font-size: 12px;
+    line-height: 1.2em;
+    min-height: 100px;
+    padding: 5px;
+  }
+  .typed-cursor {
+    width: 6px;
+    height: 1.1em;
+  }
+
+  /* Системные логи */
+  .system-logs {
+    width: calc(100% - 16px);
+    left: 8px;
+    height: 60px;
+    bottom: 45px;
+    font-size: 9px;
+    padding: 5px;
+  }
+  .system-logs::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  /* Футер терминала */
+  .terminal-footer {
+    height: 35px;
+    padding: 0 8px;
+  }
+  .terminal-footer .prompt {
+    font-size: 12px;
+    margin-right: 5px;
+  }
+  #command-input {
+    font-size: 11px;
+  }
+
+  /* OSINT Specific для мобильных */
+  .osint-tools {
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .osint-btn {
+    font-size: 12px;
+    padding: 7px 12px;
+    width: 98%; /* Почти на всю ширину */
+    max-width: 280px;
+  }
+  .osint-input-area {
+    gap: 8px;
+  }
+  #osint-input, #osint-submit-btn {
+    font-size: 12px;
+    padding: 7px 10px;
+    width: calc(98% - 20px);
+    max-width: 320px;
+  }
+  #osint-results {
+    font-size: 11px;
+    padding: 10px;
+    max-height: 200px;
+  }
+}
+
+
+/* Для планшетов и больших телефонов (ширина до 768px, если не мобильное устройство) */
+@media (max-width: 768px) and (not screen and (max-width: 480px)) {
+  /* Эти правила применяются, если ширина до 768px, но не меньше 480px (т.е. средние устройства) */
+  nav {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 5px 0;
   }
 
   nav button {
     font-size: 12px;
     padding: 8px 15px;
-    margin: 5px 5px; /* Увеличиваем вертикальный отступ */
+    margin: 5px 5px;
   }
 
   .container {
-    margin: 70px auto 100px auto; /* Уменьшаем отступы сверху */
+    margin: 70px auto 100px auto;
     padding: 0 15px;
   }
 
   section {
-    padding: 25px 30px 35px; /* Уменьшаем внутренние отступы */
-    width: calc(100% - 60px); /* Ширина с учетом новых паддингов */
+    padding: 25px 30px 35px;
+    width: calc(100% - 60px);
   }
 
   section h1 {
-    font-size: 26px; /* Чуть уменьшаем заголовки */
+    font-size: 26px;
   }
 
   .avatar {
@@ -540,7 +675,7 @@ section pre {
 
   .info-line {
     font-size: 14px;
-    max-width: 90%; /* Позволяем занимать больше ширины */
+    max-width: 90%;
   }
 
   .music-box {
@@ -559,14 +694,14 @@ section pre {
   }
 
   .system-logs {
-    width: calc(100% - 30px); /* Ширина с учетом отступов */
+    width: calc(100% - 30px);
     left: 15px;
-    height: 90px; /* Уменьшаем высоту */
-    bottom: 60px; /* Поднимаем выше футера */
+    height: 90px;
+    bottom: 60px;
   }
 
   .terminal-footer {
-    height: 45px; /* Чуть уменьшаем высоту футера */
+    height: 45px;
     padding: 0 15px;
   }
 
@@ -581,23 +716,23 @@ section pre {
 
   /* OSINT Specific */
   .osint-tools {
-    flex-direction: column; /* Кнопки OSINT в столбик */
+    flex-direction: column;
     gap: 15px;
   }
 
   .osint-btn {
-    width: 90%; /* Занимают почти всю ширину */
-    max-width: 350px; /* Но не слишком широкие */
+    width: 90%;
+    max-width: 350px;
     padding: 10px 20px;
   }
 
   .osint-input-area {
-    flex-direction: column; /* Поле ввода и кнопка в столбик */
+    flex-direction: column;
     gap: 10px;
   }
 
   #osint-input, #osint-submit-btn {
-    width: calc(90% - 30px); /* Учитываем паддинг */
+    width: calc(90% - 30px);
     max-width: 380px;
   }
 
@@ -608,8 +743,10 @@ section pre {
 }
 
 /* Для самых маленьких телефонов (ширина до 480px) */
+/* Эти правила теперь перекрываются более общими .device-mobile, если JS определит мобильное устройство */
 @media (max-width: 480px) {
-  nav button {
+  /* Закомментировал, так как body.device-mobile будет более приоритетным */
+  /* nav button {
     font-size: 10px;
     padding: 6px 10px;
     margin: 3px 3px;
@@ -689,11 +826,10 @@ section pre {
     font-size: 12px;
   }
 
-  /* OSINT Specific */
   .osint-btn {
     font-size: 14px;
     padding: 8px 15px;
-    width: 95%; /* Ещё больше ширины */
+    width: 95%;
     max-width: 300px;
   }
 
@@ -707,5 +843,5 @@ section pre {
   #osint-results {
     font-size: 12px;
     padding: 10px;
-  }
+  } */
 }
