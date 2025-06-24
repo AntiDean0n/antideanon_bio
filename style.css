@@ -414,15 +414,6 @@ section pre {
   transform: translateY(-2px);
 }
 
-/* Новый стиль для активной кнопки OSINT */
-.osint-btn.active {
-    background-color: var(--main-color); /* Основной цвет */
-    color: var(--bg-dark); /* Темный текст на основном фоне */
-    box-shadow: 0 0 25px var(--accent-color), inset 0 0 10px var(--accent-color);
-    border-color: var(--accent-color);
-    transform: translateY(-2px);
-}
-
 .osint-input-area {
   display: flex;
   justify-content: center;
@@ -499,169 +490,27 @@ section pre {
   border-radius: 5px;
 }
 
-/* --- Медиа-запросы для адаптивности --- */
 
-/* Стилизация для мобильных устройств (класс device-mobile) */
-body.device-mobile {
-  /* Уменьшаем высоту навигации для мобильных */
-  nav {
-    height: 40px;
-    padding: 3px 0;
-  }
-  nav button {
-    font-size: 10px;
-    padding: 6px 10px;
-    margin: 2px 2px;
-  }
-
-  /* Уменьшаем основной контейнер и секции */
-  .container {
-    margin: 55px auto 80px auto;
-    padding: 0 10px;
-  }
-  section {
-    padding: 15px 15px 20px;
-    width: calc(100% - 30px);
-  }
-  section h1 {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-
-  /* Уменьшаем аватар и подзаголовок */
-  .avatar {
-    width: 70px;
-    height: 70px;
-    margin-bottom: 15px;
-  }
-  .main-subtitle {
-    font-size: 12px;
-    margin-bottom: 20px;
-  }
-
-  /* Информационные строки */
-  .info-line {
-    font-size: 11px;
-    margin: 6px 0;
-    padding-bottom: 2px;
-    max-width: 95%;
-  }
-
-  /* Строка загрузки */
-  .waiting-line {
-    font-size: 12px;
-    width: 12ch;
-  }
-
-  /* Музыкальный блок */
-  .music-box {
-    width: 70px;
-    height: 70px;
-    top: 50px;
-    left: 8px;
-    border-width: 1px;
-  }
-  #music-icon {
-    font-size: 12px;
-    margin-bottom: 4px;
-  }
-  #music-title {
-    font-size: 8px;
-  }
-
-  /* pre-блоки */
-  section pre {
-    font-size: 12px;
-    line-height: 1.2em;
-    min-height: 100px;
-    padding: 5px;
-  }
-  .typed-cursor {
-    width: 6px;
-    height: 1.1em;
-  }
-
-  /* Системные логи */
-  .system-logs {
-    width: calc(100% - 16px);
-    left: 8px;
-    height: 60px;
-    bottom: 45px;
-    font-size: 9px;
-    padding: 5px;
-  }
-  .system-logs::-webkit-scrollbar {
-    width: 3px;
-  }
-
-  /* Футер терминала */
-  .terminal-footer {
-    height: 35px;
-    padding: 0 8px;
-  }
-  .terminal-footer .prompt {
-    font-size: 12px;
-    margin-right: 5px;
-  }
-  #command-input {
-    font-size: 11px;
-  }
-
-  /* OSINT Specific для мобильных */
-  .osint-tools {
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  .osint-btn {
-    font-size: 12px;
-    padding: 7px 12px;
-    width: 98%; /* Почти на всю ширину */
-    max-width: 280px;
-  }
-  .osint-input-area {
-    gap: 8px;
-  }
-  #osint-input, #osint-submit-btn {
-    font-size: 12px;
-    padding: 7px 10px;
-    width: calc(98% - 20px);
-    max-width: 320px;
-  }
-  #osint-results {
-    font-size: 11px;
-    padding: 10px;
-    max-height: 200px;
-  }
-}
-
-
-/* Для планшетов и больших телефонов (ширина до 768px, если не мобильное устройство) */
-@media (max-width: 768px) and (not screen and (max-width: 480px)) {
-  /* Эти правила применяются, если ширина до 768px, но не меньше 480px (т.е. средние устройства) */
-  nav {
-    height: auto;
-    flex-wrap: wrap;
-    padding: 5px 0;
-  }
-
+/* Медиа-запросы для адаптивности на разных устройствах */
+@media (max-width: 768px) {
   nav button {
     font-size: 12px;
     padding: 8px 15px;
-    margin: 5px 5px;
+    margin: 0 5px;
   }
 
   .container {
     margin: 70px auto 100px auto;
-    padding: 0 15px;
+    padding: 0 10px;
   }
 
   section {
-    padding: 25px 30px 35px;
-    width: calc(100% - 60px);
+    padding: 20px 25px 30px;
+    width: calc(100% - 50px);
   }
 
   section h1 {
-    font-size: 26px;
+    font-size: 24px;
   }
 
   .avatar {
@@ -669,12 +518,12 @@ body.device-mobile {
     height: 100px;
   }
 
-  .main-subtitle {
-    font-size: 16px;
+  .main-subtitle, .info-line, section pre,
+  .music-box {
+    font-size: 14px;
   }
 
   .info-line {
-    font-size: 14px;
     max-width: 90%;
   }
 
@@ -682,135 +531,14 @@ body.device-mobile {
     width: 90px;
     height: 90px;
     top: 60px;
-    left: 15px;
-  }
-
-  #music-icon {
-    font-size: 16px;
-  }
-
-  #music-title {
-    font-size: 10px;
+    left: 10px;
   }
 
   .system-logs {
-    width: calc(100% - 30px);
-    left: 15px;
-    height: 90px;
-    bottom: 60px;
-  }
-
-  .terminal-footer {
-    height: 45px;
-    padding: 0 15px;
-  }
-
-  .terminal-footer .prompt {
-    font-size: 16px;
-    margin-right: 8px;
-  }
-
-  #command-input {
-    font-size: 14px;
-  }
-
-  /* OSINT Specific */
-  .osint-tools {
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  .osint-btn {
-    width: 90%;
-    max-width: 350px;
-    padding: 10px 20px;
-  }
-
-  .osint-input-area {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  #osint-input, #osint-submit-btn {
-    width: calc(90% - 30px);
-    max-width: 380px;
-  }
-
-  #osint-results {
-    font-size: 14px;
-    padding: 12px;
-  }
-}
-
-/* Для самых маленьких телефонов (ширина до 480px) */
-/* Эти правила теперь перекрываются более общими .device-mobile, если JS определит мобильное устройство */
-@media (max-width: 480px) {
-  /* Закомментировал, так как body.device-mobile будет более приоритетным */
-  /* nav button {
-    font-size: 10px;
-    padding: 6px 10px;
-    margin: 3px 3px;
-  }
-
-  .container {
-    margin: 60px auto 90px auto;
-    padding: 0 10px;
-  }
-
-  section {
-    padding: 20px 20px 25px;
     width: calc(100% - 40px);
-  }
-
-  section h1 {
-    font-size: 22px;
-    margin-bottom: 15px;
-  }
-
-  .avatar {
-    width: 80px;
+    left: 20px;
     height: 80px;
-  }
-
-  .main-subtitle {
-    font-size: 14px;
-  }
-
-  .info-line {
-    font-size: 12px;
-  }
-
-  .waiting-line {
-    font-size: 14px;
-  }
-
-  .music-box {
-    width: 80px;
-    height: 80px;
-    top: 55px;
-    left: 10px;
-  }
-
-  #music-icon {
-    font-size: 14px;
-  }
-
-  #music-title {
-    font-size: 9px;
-  }
-
-  section pre {
-    font-size: 13px;
-    line-height: 1.3em;
-    min-height: 120px;
-  }
-
-  .system-logs {
-    width: calc(100% - 20px);
-    left: 10px;
-    height: 70px;
-    bottom: 55px;
-    font-size: 10px;
+    bottom: 60px;
   }
 
   .terminal-footer {
@@ -819,29 +547,36 @@ body.device-mobile {
   }
 
   .terminal-footer .prompt {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   #command-input {
-    font-size: 12px;
+    font-size: 14px;
+  }
+
+  .osint-tools {
+    flex-direction: column;
+    align-items: center;
   }
 
   .osint-btn {
-    font-size: 14px;
-    padding: 8px 15px;
-    width: 95%;
+    width: 80%;
     max-width: 300px;
+    margin-bottom: 10px;
   }
 
-  #osint-input, #osint-submit-btn {
-    font-size: 14px;
-    padding: 8px 12px;
-    width: calc(95% - 24px);
-    max-width: 350px;
+  .osint-input-area {
+    flex-direction: column;
+    gap: 10px;
   }
 
-  #osint-results {
-    font-size: 12px;
-    padding: 10px;
-  } */
+  #osint-input {
+    width: calc(100% - 30px); /* 100% минус padding */
+    max-width: 90%;
+  }
+
+  #osint-submit-btn {
+    width: calc(100% - 30px); /* 100% минус padding */
+    max-width: 90%;
+  }
 }
