@@ -9,11 +9,16 @@ const sections = {
   faq: document.getElementById('faq'),
   contact: document.getElementById('contact')
 };
-const commandInput = document.getElementById('command-input');
+
+// Получаем элементы консоли, они теперь внутри #main
+const systemLogs = document.querySelector('#main .system-logs');
 const logOutput = document.getElementById('log-output');
+const terminalFooter = document.querySelector('#main .terminal-footer');
+const commandInput = document.getElementById('command-input'); // Он теперь disabled в HTML
 
 let currentTypingEffect = null;
 let logInterval = null;
+let currentSystemLogMessageIndex = 0; // Для последовательного вывода логов
 
 function toggleSound() {
   if (music.paused) {
@@ -77,6 +82,24 @@ function showSection(id) {
     targetSection.offsetHeight;
     targetSection.classList.add('active-section');
 
+    // Управление видимостью консоли
+    if (id === 'main') {
+      systemLogs.style.display = 'block';
+      terminalFooter.style.display = 'flex';
+      // Добавляем класс для активации анимации CSS
+      systemLogs.classList.add('active-console');
+      terminalFooter.classList.add('active-console');
+    } else {
+      // Скрываем консоль при переключении
+      systemLogs.classList.remove('active-console');
+      terminalFooter.classList.remove('active-console');
+      // Скрываем элементы через небольшой таймаут, чтобы анимация успела отработать
+      setTimeout(() => {
+        systemLogs.style.display = 'none';
+        terminalFooter.style.display = 'none';
+      }, 600); // Должно соответствовать transition в CSS
+    }
+
     if (id !== 'main') {
       const preElement = targetSection.querySelector('pre[data-typed-text]');
       const cursorElement = targetSection.querySelector('.typed-cursor');
@@ -105,127 +128,8 @@ function showSection(id) {
   });
 }
 
-const commands = {
-  'help': () => {
-    outputToTerminal(` 
- Available commands: 
-   show <section>  - Displays a section (e.g., show bio, show deffers, show price, show faq, show contact) 
-   set theme <color> - Changes the terminal theme (e.g., set theme green, set theme red, set theme default) 
-   clear           - Clears the terminal output 
-   whoami          - Displays information about you (Easter egg) 
-   ping            - Tests network connectivity (dummy) 
-   play game       - Launches a simple text-based game (Easter egg) 
-     `);
-  },
-  'show': (args) => {
-    const sectionName = args[0];
-    if (sections[sectionName]) {
-      showSection(sectionName);
-      outputToTerminal(`Section loaded: ${sectionName.toUpperCase()}.`);
-    } else {
-      outputToTerminal(`[ERROR] Unknown section: ${sectionName}. Try 'show bio'.`, true);
-    }
-  },
-  'set theme': (args) => {
-    const themeName = args[0];
-    const body = document.body;
-    body.classList.remove('theme-green', 'theme-red');
-
-    if (themeName === 'green') {
-      body.classList.add('theme-green');
-      outputToTerminal(`Theme set to GREEN.`);
-    } else if (themeName === 'red') {
-      body.classList.add('theme-red');
-      outputToTerminal(`Theme set to RED.`);
-    } else if (themeName === 'default') {
-      outputToTerminal(`Theme set to DEFAULT.`);
-    } else {
-      outputToTerminal(`[ERROR] Invalid theme: ${themeName}. Available: green, red, default.`, true);
-    }
-  },
-  'clear': () => {
-    logOutput.innerHTML = '';
-    outputToTerminal("Terminal cleared.");
-  },
-  'whoami': () => {
-    outputToTerminal(` 
- You are a visitor in the Antideanon Cyber Terminal. 
- Your IP: ${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)} 
- Status: Authenticated Guest. 
- Access Level: Standard. 
- `);
-  },
-  'ping': () => {
-    outputToTerminal("Pinging 8.8.8.8 with 32 bytes of data...");
-    setTimeout(() => outputToTerminal("Reply from 8.8.8.8: bytes=32 time=1ms TTL=118"), 500);
-    setTimeout(() => outputToTerminal("Reply from 8.8.8.8: bytes=32 time=2ms TTL=118"), 1000);
-    setTimeout(() => outputToTerminal("Reply from 8.8.8.8: bytes=32 time=1ms TTL=118"), 1500);
-    setTimeout(() => outputToTerminal("Ping statistics for 8.8.8.8:\n    Packets: Sent = 3, Received = 3, Lost = 0 (0% loss),\nApproximate round trip times in milli-seconds:\n    Minimum = 1ms, Maximum = 2ms, Average = 1ms"), 2000);
-  },
-  'play game': () => {
-    outputToTerminal(` 
- Initiating Text Adventure... 
- Welcome, Hacker. You are at a crossroads. 
- Type 'left' or 'right'.`);
-
-    let gameActive = true;
-    const gameHandler = (e) => {
-      if (e.key === 'Enter') {
-        const input = commandInput.value.trim().toLowerCase();
-        commandInput.value = '';
-        if (!gameActive) return;
-
-        if (input === 'left') {
-          outputToTerminal("You chose left. You find a data chip. (End of demo game)");
-          gameActive = false;
-          commandInput.removeEventListener('keydown', gameHandler);
-        } else if (input === 'right') {
-          outputToTerminal("You chose right. A firewall blocks your path. (End of demo game)");
-          gameActive = false;
-          commandInput.removeEventListener('keydown', gameHandler);
-        } else {
-          outputToTerminal("[GAME] Invalid move. Type 'left' or 'right'.");
-        }
-      }
-    };
-    commandInput.addEventListener('keydown', gameHandler);
-  }
-};
-
-function outputToTerminal(message, isError = false) {
-  const span = document.createElement('span');
-  const timestamp = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  span.textContent = `[${timestamp}] ${message}`;
-  if (isError) {
-    span.style.color = 'var(--accent-color)';
-  }
-  logOutput.appendChild(span);
-  logOutput.scrollTop = logOutput.scrollHeight;
-}
-
-commandInput.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    const command = commandInput.value.trim();
-    commandInput.value = '';
-    outputToTerminal(`> ${command}`);
-
-    if (command === '') return;
-
-    const parts = command.toLowerCase().split(' ');
-    const mainCommand = parts[0];
-    const args = parts.slice(1);
-
-    if (commands[command]) {
-      commands[command]();
-    } else if (commands[mainCommand] && typeof commands[mainCommand] === 'function') {
-        commands[mainCommand](args);
-    } else if (commands[mainCommand + ' ' + args[0]]) {
-        commands[mainCommand + ' ' + args[0]](args.slice(1));
-    } else {
-      outputToTerminal(`[ERROR] UNKNOWN_COMMAND: '${command}'. Type 'help' for options.`, true);
-    }
-  }
-});
+// Удаляем объект commands, так как консоль неактивна для ввода
+// Удаляем commandInput.addEventListener, так как ввод отключен
 
 const systemLogMessages = [
   "SCANNING NETWORK_INTEGRITY_PROTOCOLS...",
@@ -250,8 +154,10 @@ const systemLogMessages = [
 ];
 
 function generateSystemLog() {
-  const randomIndex = Math.floor(Math.random() * systemLogMessages.length);
-  const message = systemLogMessages[randomIndex];
+  // Выводим сообщения последовательно, а не случайно
+  const message = systemLogMessages[currentSystemLogMessageIndex];
+  currentSystemLogMessageIndex = (currentSystemLogMessageIndex + 1) % systemLogMessages.length;
+
   const span = document.createElement('span');
   const timestamp = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   span.textContent = `[${timestamp}] ${message}`;
@@ -278,7 +184,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  logInterval = setInterval(generateSystemLog, 3000 + Math.random() * 2000);
+  // Запуск генерации системных логов с случайным интервалом
+  // Логи всегда генерируются, но отображаются только когда консоль видна
+  logInterval = setInterval(generateSystemLog, 3000 + Math.random() * 2000); 
 });
 
 buttons.forEach(button => {
