@@ -10,15 +10,13 @@ const sections = {
   contact: document.getElementById('contact')
 };
 
-// Получаем элементы консоли, они теперь внутри #main
-const systemLogs = document.querySelector('#main .system-logs');
-const logOutput = document.getElementById('log-output');
-const terminalFooter = document.querySelector('#main .terminal-footer');
-const commandInput = document.getElementById('command-input'); // Он теперь disabled в HTML
+// Элементы консоли теперь находятся внутри #main, получаем их оттуда
+const mainSection = document.getElementById('main');
+const logOutput = mainSection.querySelector('#log-output');
+const commandInput = mainSection.querySelector('#command-input'); // Это поле теперь readonly
 
 let currentTypingEffect = null;
 let logInterval = null;
-let currentSystemLogMessageIndex = 0; // Для последовательного вывода логов
 
 function toggleSound() {
   if (music.paused) {
@@ -78,27 +76,28 @@ function showSection(id) {
       console.error("Section not found:", id);
       return;
     }
-    targetSection.style.display = 'block';
-    targetSection.offsetHeight;
-    targetSection.classList.add('active-section');
 
-    // Управление видимостью консоли
+    // Логика отображения/скрытия консоли
     if (id === 'main') {
-      systemLogs.style.display = 'block';
-      terminalFooter.style.display = 'flex';
-      // Добавляем класс для активации анимации CSS
-      systemLogs.classList.add('active-console');
-      terminalFooter.classList.add('active-console');
+      // Когда основная секция активна, показываем консоль
+      mainSection.querySelector('.system-logs').style.display = 'block';
+      mainSection.querySelector('.terminal-footer').style.display = 'flex';
+      // Перезапускаем логи, если они были остановлены
+      if (!logInterval) {
+          logInterval = setInterval(generateSystemLog, 3000 + Math.random() * 2000);
+      }
     } else {
-      // Скрываем консоль при переключении
-      systemLogs.classList.remove('active-console');
-      terminalFooter.classList.remove('active-console');
-      // Скрываем элементы через небольшой таймаут, чтобы анимация успела отработать
-      setTimeout(() => {
-        systemLogs.style.display = 'none';
-        terminalFooter.style.display = 'none';
-      }, 600); // Должно соответствовать transition в CSS
+      // В других секциях скрываем консоль
+      mainSection.querySelector('.system-logs').style.display = 'none';
+      mainSection.querySelector('.terminal-footer').style.display = 'none';
+      // Останавливаем генерацию логов, если консоль неактивна
+      clearInterval(logInterval);
+      logInterval = null;
     }
+
+    targetSection.style.display = 'block';
+    targetSection.offsetHeight; // Запускаем рефлоу для срабатывания transition
+    targetSection.classList.add('active-section');
 
     if (id !== 'main') {
       const preElement = targetSection.querySelector('pre[data-typed-text]');
@@ -128,9 +127,6 @@ function showSection(id) {
   });
 }
 
-// Удаляем объект commands, так как консоль неактивна для ввода
-// Удаляем commandInput.addEventListener, так как ввод отключен
-
 const systemLogMessages = [
   "SCANNING NETWORK_INTEGRITY_PROTOCOLS...",
   "STATUS: ALL_MODULES_ONLINE.",
@@ -154,10 +150,8 @@ const systemLogMessages = [
 ];
 
 function generateSystemLog() {
-  // Выводим сообщения последовательно, а не случайно
-  const message = systemLogMessages[currentSystemLogMessageIndex];
-  currentSystemLogMessageIndex = (currentSystemLogMessageIndex + 1) % systemLogMessages.length;
-
+  const randomIndex = Math.floor(Math.random() * systemLogMessages.length);
+  const message = systemLogMessages[randomIndex];
   const span = document.createElement('span');
   const timestamp = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
   span.textContent = `[${timestamp}] ${message}`;
@@ -175,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     musicIcon.textContent = '🔈';
   });
 
-  showSection('main');
+  showSection('main'); // Показываем 'main' секцию по умолчанию при загрузке, что активирует консоль
 
   buttons.forEach(button => {
     button.addEventListener('click', () => {
@@ -183,10 +177,6 @@ document.addEventListener('DOMContentLoaded', () => {
       showSection(targetId);
     });
   });
-
-  // Запуск генерации системных логов с случайным интервалом
-  // Логи всегда генерируются, но отображаются только когда консоль видна
-  logInterval = setInterval(generateSystemLog, 3000 + Math.random() * 2000); 
 });
 
 buttons.forEach(button => {
