@@ -1,541 +1,552 @@
-/* Базовые стили и CSS-переменные для тем */ 
-:root { 
-  --main-color: #00fff7; /* Основной цвет интерфейса (бирюзовый) */ 
-  --accent-color: #ff00c8; /* Акцентный цвет (фуксия) */ 
-  --bg-dark: rgba(0, 0, 0, 0.85); /* Темный фон для блоков */ 
-  --text-color: #00fff7; /* Цвет основного текста */ 
-  --glow-intensity: 0.15; /* Интенсивность фонового свечения */ 
-  --font-mono: 'Share Tech Mono', monospace; /* Моноширинный шрифт */ 
-} 
-
-/* Тема Green (активируется через JS при команде 'set theme green') */ 
-body.theme-green { 
-  --main-color: #00ff00; /* Ярко-зеленый */ 
-  --accent-color: #006400; /* Темно-зеленый акцент */ 
-  --text-color: #00ff00; 
-} 
-
-/* Тема Red (активируется через JS при команде 'set theme red') */ 
-body.theme-red { 
-  --main-color: #ff0000; /* Красный */ 
-  --accent-color: #8b0000; /* Темно-красный акцент */ 
-  --text-color: #ff0000; 
-} 
-
-/* Базовые стили для всей страницы */ 
-html, body { 
-  margin: 0; padding: 0; height: 100%; /* Убираем отступы, растягиваем на весь экран */ 
-  background: #000; /* Черный фон */ 
-  font-family: var(--font-mono); /* Используем заданный моноширинный шрифт */ 
-  color: var(--text-color); /* Цвет текста по умолчанию */ 
-  scroll-behavior: smooth; /* Плавная прокрутка */ 
-  overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку */ 
-} 
-
-/* Фон с "матричным" эффектом (генерируется псевдоэлементом) */ 
-body::before { 
-  content: ''; 
-  position: fixed; /* Фиксированное положение, чтобы не скроллился */ 
-  top: 0; left: 0; 
-  width: 100%; height: 100%; 
-  /* Градиенты для создания сетки и шума */ 
-  background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), /* Затемнение */ 
-              repeating-linear-gradient(0deg, rgba(var(--main-color), var(--glow-intensity)) 0px, rgba(var(--main-color), var(--glow-intensity)) 1px, transparent 1px, transparent 20px), /* Горизонтальные линии */ 
-              repeating-linear-gradient(90deg, rgba(var(--main-color), var(--glow-intensity)) 0px, rgba(var(--main-color), var(--glow-intensity)) 1px, transparent 1px, transparent 20px); /* Вертикальные линии */ 
-  z-index: -1; /* Помещаем под остальным контентом */ 
-  opacity: 0.15; /* Делаем полупрозрачным */ 
-  animation: background-noise 10s infinite alternate; /* Анимация движения фона */ 
-  background-size: 20px 20px; /* Размер "клеток" сетки */ 
-} 
-
-/* Анимация для фонового шума */ 
-@keyframes background-noise { 
-  0% { background-position: 0 0; } 
-  100% { background-position: 100% 100%; } 
-} 
-
-/* Навигационная панель сверху */ 
-nav { 
-  position: fixed; /* Фиксированное положение */ 
-  top: 0; left: 0; right: 0; 
-  height: 50px; 
-  background: var(--bg-dark); /* Темный фон */ 
-  border-bottom: 1px solid var(--main-color); /* Нижняя граница */ 
-  display: flex; /* Flexbox для центрирования кнопок */ 
-  align-items: center; 
-  justify-content: center; 
-  z-index: 1000; /* Поверх всего */ 
-  user-select: none; /* Запрещаем выделение текста */ 
-  /* Неоновый светящийся эффект */ 
-  box-shadow: 
-    0 0 15px var(--main-color), 
-    inset 0 -1px 1px var(--accent-color); 
-} 
-
-nav button { 
-  background: none; /* Без фона */ 
-  border: none; /* Без границ */ 
-  color: var(--main-color); /* Цвет текста */ 
-  font-size: 14px; 
-  letter-spacing: 0.15em; /* Расстояние между буквами */
-  /* Уменьшаем padding для лучшей адаптивности кнопок */
-  padding: 10px 18px; /* Немного уменьшен padding */
-  margin: 0 5px; /* Уменьшен margin */
-  cursor: pointer; /* Курсор-указатель */ 
-  transition: color 0.3s ease, filter 0.1s ease; /* Плавный переход цвета и фильтра */ 
-  text-transform: uppercase; /* Все буквы заглавные */ 
-  font-weight: 700; 
-  text-shadow: 0 0 5px var(--main-color); /* Тень для эффекта свечения */ 
-  white-space: nowrap; /* Предотвращаем перенос текста */
-} 
-
-/* Эффекты при наведении и для активной кнопки */ 
-nav button:hover, 
-nav button.active { 
-  color: var(--accent-color); /* Цвет акцента */ 
-  text-shadow: 
-    0 0 10px var(--accent-color), 
-    0 0 25px var(--accent-color); /* Усиленная тень */ 
-} 
-
-/* Основной контейнер для секций */ 
-.container { 
-  max-width: 900px; /* Максимальная ширина */ 
-  /* Учитываем, что консоль теперь внутри секции и не требует места снизу */
-  margin: 80px auto 30px auto; /* Отступы сверху, снизу, центрирование */ 
-  padding: 0 20px; 
-  position: relative; /* Для абсолютного позиционирования секций */ 
-  z-index: 5; 
-  min-height: calc(100vh - 110px); /* Минимальная высота, чтобы контейнер был виден */ 
-} 
-
-/* Общие стили для всех секций */ 
-section { 
-  background: var(--bg-dark); /* Темный фон */ 
-  border: 1px solid var(--main-color); /* Граница */ 
-  box-shadow: 0 0 40px var(--main-color); /* Свечение */ 
-  border-radius: 12px; /* Скругленные углы */ 
-  padding: 30px 40px 40px; 
-  margin-bottom: 50px; 
-  scroll-margin-top: 70px; /* Отступ при прокрутке к якорю */ 
-
-  opacity: 0; /* Изначально невидимы */ 
-  transform: translateY(20px); /* Смещены вниз */ 
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out; /* Плавное появление */ 
-  position: absolute; /* Позиционирование поверх друг друга */ 
-  width: calc(100% - 80px); /* Ширина с учетом паддингов */ 
-  top: 0; left: 0; 
-  visibility: hidden; /* Скрывает элемент, не давая взаимодействовать */ 
-} 
-
-/* Стиль для активной (видимой) секции */ 
-section.active-section { 
-  opacity: 1; /* Появляется */ 
-  transform: translateY(0); /* Возвращается на место */ 
-  visibility: visible; /* Становится видимой */ 
-  position: static; /* Занимает место в потоке документа, остальные секции не накладываются */ 
-} 
-
-/* Заголовки секций */ 
-section h1 { 
-  font-size: 28px; 
-  margin-bottom: 20px; 
-  letter-spacing: 0.12em; 
-  text-transform: uppercase; 
-  text-align: center; 
-  text-shadow: 
-    0 0 5px var(--main-color), 
-    0 0 10px var(--main-color), 
-    0 0 20px var(--accent-color), 
-    0 0 30px var(--accent-color); /* Эффект многослойного свечения */ 
-} 
-
-/* Аватар */ 
-.avatar { 
-  width: 120px; height: 120px; 
-  border-radius: 50%; /* Круглая форма */ 
-  border: 2px solid var(--main-color); 
-  margin: 0 auto 25px; /* Центрирование */ 
-  display: block; 
-  object-fit: cover; /* Обрезка изображения */ 
-  animation: glow 2.5s infinite ease-in-out; /* Анимация свечения */ 
-  box-shadow: 0 0 20px var(--main-color); 
-} 
-
-/* Анимация свечения для аватара */ 
-@keyframes glow { 
-  0%, 100% { box-shadow: 0 0 10px var(--main-color); } 
-  50% { box-shadow: 0 0 30px var(--accent-color); } 
-} 
-
-/* Подзаголовок главной секции */ 
-.main-subtitle { 
-  text-align: center; 
-  font-size: 18px; 
-  margin: 5px 0 30px 0; 
-  letter-spacing: 0.1em; 
-  text-transform: uppercase; 
-  color: var(--main-color); 
-  font-weight: 500; 
-} 
-
-/* Информационные строки (для контактов, имени и т.д.) */ 
-.info-line { 
-  font-size: 16px; 
-  margin: 8px 0; 
-  padding-bottom: 4px; 
-  border-bottom: 1px solid var(--main-color); /* Нижняя граница */ 
-  max-width: 400px; /* Ограничиваем ширину */ 
-  margin-left: auto; margin-right: auto; /* Центрируем */ 
-  display: flex; /* Для размещения метки и значения на одной строке */ 
-  justify-content: space-between; /* Распределение по ширине */ 
-  letter-spacing: 0.06em; 
-} 
-
-.info-label { 
-  color: var(--accent-color); /* Цвет метки */ 
-  font-weight: 700; 
-} 
-
-.info-value { 
-  color: var(--main-color); /* Цвет значения */ 
-  font-weight: 400; 
-  text-align: right; 
-  max-width: 60%; 
-  word-wrap: break-word; /* Перенос слов, если длинные */ 
-} 
-
-.info-value a { 
-  color: var(--main-color); 
-  text-decoration: none; 
-  border-bottom: 1.5px dashed var(--main-color); /* Пунктирное подчеркивание */ 
-  transition: all 0.3s ease; /* Плавный переход */ 
-  padding-bottom: 2px; 
-  user-select: text; /* Разрешаем выделение текста ссылок */ 
-} 
-
-.info-value a:hover { 
-  color: var(--accent-color); 
-  border-bottom: 2px solid var(--accent-color); 
-  text-shadow: 0 0 8px var(--accent-color); 
-} 
-
-/* Анимация строки загрузки (для главной секции) */ 
-.waiting-line { 
-  margin-top: 40px; 
-  font-size: 16px; 
-  text-align: center; 
-  white-space: nowrap; /* Не переносить текст */ 
-  overflow: hidden; /* Скрывать выходящий за границы текст */ 
-  border-right: 3px solid var(--main-color); /* Курсор */ 
-  width: 14ch; /* Ширина в символах */ 
-  animation: typing 3s steps(14) infinite, blink-caret 0.75s step-end infinite; /* Анимации набора и мигания курсора */ 
-  margin-left: auto; margin-right: auto; 
-  letter-spacing: 0.1em; 
-  user-select: none; 
-} 
-
-/* Анимация набора текста */ 
-@keyframes typing { 
-  0%, 50% { width: 0; } 
-  100% { width: 14ch; } 
-} 
-
-/* Анимация мигания курсора */ 
-@keyframes blink-caret { 
-  50% { border-color: transparent; } 
-  100% { border-color: var(--main-color); } 
-} 
-
-/* Блок управления музыкой */ 
-.music-box { 
-  position: fixed; 
-  top: 60px; left: 20px; 
-  width: 110px; height: 110px; 
-  background: var(--bg-dark); 
-  border: 2px solid var(--main-color); 
-  border-radius: 50%; 
-  box-shadow: 0 0 15px var(--main-color); 
-  display: flex; 
-  flex-direction: column; 
-  align-items: center; 
-  justify-content: center; 
-  font-family: var(--font-mono); 
-  color: var(--main-color); 
-  text-align: center; 
-  cursor: pointer; 
-  z-index: 10; 
-  transition: all 0.3s ease; 
-  user-select: none; 
-} 
-
-.music-box:hover { 
-  box-shadow: 0 0 25px var(--accent-color); 
-  border-color: var(--accent-color); 
-  color: var(--accent-color); 
-} 
-
-#music-icon { 
-  font-size: 18px; 
-  margin-bottom: 6px; 
-  user-select: none; 
-} 
-
-#music-title { 
-  font-size: 11px; 
-  line-height: 1.2em; 
-  padding: 0 8px; 
-  user-select: none; 
-} 
-
-/* Стили для pre-блоков с эффектом набора (списки прайса, контактов) */ 
-section pre { 
-  font-family: var(--font-mono); 
-  color: var(--text-color); 
-  background: transparent; 
-  border: none; 
-  white-space: pre-line; /* Сохраняет переносы строк, но объединяет пробелы */ 
-  line-height: 1.4em; 
-  margin: 0 auto; 
-  max-width: 500px; 
-  min-height: 150px; /* Чтобы область была видна даже без текста */ 
-  position: relative; 
-  overflow: hidden; /* Скрываем текст до его набора */ 
-} 
-
-/* Курсор для эффекта набора текста в pre-блоках */ 
-.typed-cursor { 
-  display: inline-block; /* Изначально невидимый */ 
-  background-color: var(--main-color); /* Цвет курсора */ 
-  width: 8px; 
-  height: 1.2em; /* Высота относительно шрифта */ 
-  margin-left: 5px; 
-  vertical-align: middle; 
-  animation: blink-cursor 0.75s step-end infinite; /* Анимация мигания */ 
-} 
-
-/* Нижний блок для системных логов (Теперь внутри секции main) */ 
-.system-logs { 
-  /* Удаляем fixed позиционирование */
-  position: relative; /* Относительно родителя */
-  margin-top: 50px; /* Отступ от верхнего контента в секции */
-  width: 100%; /* Занимает всю ширину родителя */
-  height: 100px; 
-  background: var(--bg-dark); 
-  border: 1px solid var(--main-color); 
-  box-shadow: 0 0 15px var(--main-color); 
-  padding: 10px; 
-  font-size: 12px; 
-  line-height: 1.3em; 
-  overflow-y: auto; /* Прокрутка, если логов много */ 
-  white-space: pre-wrap; /* Сохраняет пробелы и переносит длинные строки */ 
-  z-index: 1; /* Поверх другого контента секции */ 
-  border-radius: 8px; 
-  user-select: none; 
-  display: block; /* По умолчанию отображается (будет управляться JS) */
-  /* Анимация появления/скрытия */
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-} 
-
-/* Стилизация скроллбара для логов (для WebKit-браузеров) */ 
-.system-logs::-webkit-scrollbar { 
-  width: 5px; 
-} 
-.system-logs::-webkit-scrollbar-track { 
-  background: transparent; 
-} 
-.system-logs::-webkit-scrollbar-thumb { 
-  background: var(--accent-color); 
-  border-radius: 5px; 
-} 
-
-#log-output span { 
-  display: block; /* Каждая строка лога на новой строке */ 
-  color: rgba(var(--main-color), 0.7); /* Чуть приглушенный цвет */ 
-} 
-
-/* Интерактивная командная строка (Теперь внутри секции main) */ 
-.terminal-footer { 
-  /* Удаляем fixed позиционирование */
-  position: relative; /* Относительно родителя */
-  margin-top: 10px; /* Отступ от логов */
-  width: 100%; /* Занимает всю ширину родителя */
-  height: 50px; 
-  background: var(--bg-dark); 
-  border-top: 1px solid var(--main-color); 
-  display: flex; 
-  align-items: center; 
-  padding: 0 20px; 
-  z-index: 1; 
-  box-shadow: 
-    0 0 15px var(--main-color), 
-    inset 0 1px 1px var(--accent-color); 
-  border-radius: 0 0 8px 8px; /* Скругление только снизу */
-  display: flex; /* По умолчанию отображается (будет управляться JS) */
-  /* Анимация появления/скрытия */
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-} 
-
-/* Стили для показа консоли */
-section.active-section .system-logs,
-section.active-section .terminal-footer {
-  opacity: 1;
-  transform: translateY(0);
+/* Базовые стили и CSS-переменные для тем */
+:root {
+  --main-color: #00fff7; /* Основной цвет интерфейса (бирюзовый) */
+  --accent-color: #ff00c8; /* Акцентный цвет (фуксия) */
+  --bg-dark: rgba(0, 0, 0, 0.85); /* Темный фон для блоков */
+  --text-color: #00fff7; /* Цвет основного текста */
+  --glow-intensity: 0.15; /* Интенсивность фонового свечения */
+  --font-mono: 'Share Tech Mono', monospace; /* Моноширинный шрифт */
 }
 
-.terminal-footer .prompt { 
-  color: var(--accent-color); /* Цвет символа '>' */ 
-  font-size: 18px; 
-  margin-right: 10px; 
-  user-select: none; 
-} 
+/* Тема Green (активируется через JS при команде 'set theme green') */
+body.theme-green {
+  --main-color: #00ff00; /* Ярко-зеленый */
+  --accent-color: #006400; /* Темно-зеленый акцент */
+  --text-color: #00ff00;
+}
 
-#command-input { 
-  flex-grow: 1; /* Занимает всё доступное пространство */ 
-  background: transparent; /* Прозрачный фон */ 
-  border: none; /* Без границ */ 
-  outline: none; /* Без обводки при фокусе */ 
-  color: var(--main-color); 
-  font-family: var(--font-mono); 
-  font-size: 16px; 
-  caret-color: transparent; /* Скрываем мигающий курсор ввода */
-  letter-spacing: 0.05em; 
-  pointer-events: none; /* Запрещаем взаимодействие с полем ввода */
-} 
+/* Тема Red (активируется через JS при команде 'set theme red') */
+body.theme-red {
+  --main-color: #ff0000; /* Красный */
+  --accent-color: #8b0000; /* Темно-красный акцент */
+  --text-color: #ff0000;
+}
 
-/* Медиа-запросы для адаптивности на разных устройствах */ 
-@media (max-width: 768px) { 
-  nav button { 
-    font-size: 11px; /* Чуть меньше для лучшей подгонки */
-    padding: 8px 12px; /* Уменьшаем padding */
-    margin: 0 3px; /* Уменьшаем margin */
-  } 
+/* Базовые стили для всей страницы */
+html, body {
+  margin: 0; padding: 0; height: 100%; /* Убираем отступы, растягиваем на весь экран */
+  background: #000; /* Черный фон */
+  font-family: var(--font-mono); /* Используем заданный моноширинный шрифт */
+  color: var(--text-color); /* Цвет текста по умолчанию */
+  scroll-behavior: smooth; /* Плавная прокрутка */
+  overflow-x: hidden; /* Предотвращаем горизонтальную прокрутку */
+}
 
-  .container { 
-    margin: 70px auto 10px auto; /* Скорректирован нижний отступ */
-    padding: 0 10px; 
-  } 
+/* Фон с "матричным" эффектом (генерируется псевдоэлементом) */
+body::before {
+  content: '';
+  position: fixed; /* Фиксированное положение, чтобы не скроллился */
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  /* Градиенты для создания сетки и шума */
+  background: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), /* Затемнение */
+              repeating-linear-gradient(0deg, rgba(var(--main-color), var(--glow-intensity)) 0px, rgba(var(--main-color), var(--glow-intensity)) 1px, transparent 1px, transparent 20px), /* Горизонтальные линии */
+              repeating-linear-gradient(90deg, rgba(var(--main-color), var(--glow-intensity)) 0px, rgba(var(--main-color), var(--glow-intensity)) 1px, transparent 1px, transparent 20px); /* Вертикальные линии */
+  z-index: -1; /* Помещаем под остальным контентом */
+  opacity: 0.15; /* Делаем полупрозрачным */
+  animation: background-noise 10s infinite alternate; /* Анимация движения фона */
+  background-size: 20px 20px; /* Размер "клеток" сетки */
+}
 
-  section { 
-    padding: 20px 25px 30px; 
-    width: calc(100% - 50px); 
-  } 
+/* Анимация для фонового шума */
+@keyframes background-noise {
+  0% { background-position: 0 0; }
+  100% { background-position: 100% 100%; }
+}
 
-  section h1 { 
-    font-size: 24px; 
-  } 
+/* Навигационная панель сверху */
+nav {
+  position: fixed; /* Фиксированное положение */
+  top: 0; left: 0; right: 0;
+  height: 50px;
+  background: var(--bg-dark); /* Темный фон */
+  border-bottom: 1px solid var(--main-color); /* Нижняя граница */
+  display: flex; /* Flexbox для центрирования кнопок */
+  align-items: center;
+  justify-content: center;
+  z-index: 1000; /* Поверх всего */
+  user-select: none; /* Запрещаем выделение текста */
+  /* Неоновый светящийся эффект */
+  box-shadow:
+    0 0 15px var(--main-color),
+    inset 0 -1px 1px var(--accent-color);
+}
 
-  .avatar { 
-    width: 100px; 
-    height: 100px; 
-  } 
+nav button {
+  background: none; /* Без фона */
+  border: none; /* Без границ */
+  color: var(--main-color); /* Цвет текста */
+  font-size: 14px;
+  letter-spacing: 0.15em; /* Расстояние между буквами */
+  padding: 10px 25px;
+  margin: 0 10px;
+  cursor: pointer; /* Курсор-указатель */
+  transition: color 0.3s ease, filter 0.1s ease; /* Плавный переход цвета и фильтра */
+  text-transform: uppercase; /* Все буквы заглавные */
+  font-weight: 700;
+  text-shadow: 0 0 5px var(--main-color); /* Тень для эффекта свечения */
+  white-space: nowrap; /* Важно: предотвращает перенос текста */
+}
 
-  .main-subtitle, .info-line, section pre, #command-input { 
-    font-size: 14px; 
-  } 
+/* Эффекты при наведении и для активной кнопки */
+nav button:hover,
+nav button.active {
+  color: var(--accent-color); /* Цвет акцента */
+  text-shadow:
+    0 0 10px var(--accent-color),
+    0 0 25px var(--accent-color); /* Усиленная тень */
+}
 
-  .waiting-line { 
-    font-size: 14px; 
-  } 
+/* Основной контейнер для секций */
+.container {
+  max-width: 900px; /* Максимальная ширина */
+  margin: 80px auto 20px auto; /* Отступы сверху, снизу (для футера), центрирование. Уменьшен нижний отступ */
+  padding: 0 20px;
+  position: relative; /* Для абсолютного позиционирования секций */
+  z-index: 5;
+  min-height: calc(100vh - 100px); /* Минимальная высота, чтобы контейнер был виден */
+}
 
-  .music-box { 
-    width: 90px; 
-    height: 90px; 
-    top: 55px; 
-    left: 10px; 
-  } 
+/* Общие стили для всех секций */
+section {
+  background: var(--bg-dark); /* Темный фон */
+  border: 1px solid var(--main-color); /* Граница */
+  box-shadow: 0 0 40px var(--main-color); /* Свечение */
+  border-radius: 12px; /* Скругленные углы */
+  padding: 30px 40px 40px;
+  margin-bottom: 50px;
+  scroll-margin-top: 70px; /* Отступ при прокрутке к якорю */
 
-  #music-icon { 
-    font-size: 16px; 
-  } 
-  #music-title { 
-    font-size: 10px; 
-  } 
+  opacity: 0; /* Изначально невидимы */
+  transform: translateY(20px); /* Смещены вниз */
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out; /* Плавное появление */
+  position: absolute; /* Позиционирование поверх друг друга */
+  width: calc(100% - 80px); /* Ширина с учетом паддингов */
+  top: 0; left: 0;
+  visibility: hidden; /* Скрывает элемент, не давая взаимодействовать */
+  display: flex; /* Flexbox для расположения элементов */
+  flex-direction: column; /* Элементы идут сверху вниз */
+  box-sizing: border-box; /* Учитываем padding в ширине */
+}
 
-  .system-logs { 
-    margin-top: 30px; /* Отступ для консоли */
-    height: 80px; 
-    padding: 8px; /* Уменьшен padding */
-    width: calc(100% - 16px); /* Учитываем новый padding */
-  } 
+/* Стиль для активной (видимой) секции */
+section.active-section {
+  opacity: 1; /* Появляется */
+  transform: translateY(0); /* Возвращается на место */
+  visibility: visible; /* Становится видимой */
+  position: static; /* Занимает место в потоке документа, остальные секции не накладываются */
+  min-height: auto; /* Позволяем высоте подстраиваться под контент */
+}
 
-  .terminal-footer { 
-    height: 40px; 
-    padding: 0 10px; 
-    width: calc(100% - 20px); /* Учитываем новый padding */
-  } 
-  .terminal-footer .prompt { 
-    font-size: 16px; 
-    margin-right: 5px; 
-  } 
-} 
+/* Заголовки секций */
+section h1 {
+  font-size: 28px;
+  margin-bottom: 20px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-align: center;
+  text-shadow:
+    0 0 5px var(--main-color),
+    0 0 10px var(--main-color),
+    0 0 20px var(--accent-color),
+    0 0 30px var(--accent-color); /* Эффект многослойного свечения */
+}
 
-@media (max-width: 480px) { 
-  nav { 
-    height: 40px; 
-  } 
-  nav button { 
-    font-size: 9px; /* Еще меньше для маленьких экранов */
-    padding: 6px 8px; /* Дальнейшее уменьшение padding */
-    margin: 0 2px; /* Дальнейшее уменьшение margin */
-  } 
+/* Аватар */
+.avatar {
+  width: 120px; height: 120px;
+  border-radius: 50%; /* Круглая форма */
+  border: 2px solid var(--main-color);
+  margin: 0 auto 25px; /* Центрирование */
+  display: block;
+  object-fit: cover; /* Обрезка изображения */
+  animation: glow 2.5s infinite ease-in-out; /* Анимация свечения */
+  box-shadow: 0 0 20px var(--main-color);
+}
 
-  .container { 
-    margin: 50px auto 10px auto; 
-  } 
+/* Анимация свечения для аватара */
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 10px var(--main-color); }
+  50% { box-shadow: 0 0 30px var(--accent-color); }
+}
 
-  section { 
-    padding: 15px 20px 20px; 
-    width: calc(100% - 40px); 
-  } 
+/* Подзаголовок главной секции */
+.main-subtitle {
+  text-align: center;
+  font-size: 18px;
+  margin: 5px 0 30px 0;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--main-color);
+  font-weight: 500;
+}
 
-  section h1 { 
-    font-size: 20px; 
-  } 
+/* Информационные строки (для контактов, имени и т.д.) */
+.info-line {
+  font-size: 16px;
+  margin: 8px 0;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--main-color); /* Нижняя граница */
+  max-width: 400px; /* Ограничиваем ширину */
+  margin-left: auto; margin-right: auto; /* Центрируем */
+  display: flex; /* Для размещения метки и значения на одной строке */
+  justify-content: space-between; /* Распределение по ширине */
+  letter-spacing: 0.06em;
+}
 
-  .avatar { 
-    width: 80px; 
-    height: 80px; 
-    margin-bottom: 15px; 
-  } 
+.info-label {
+  color: var(--accent-color); /* Цвет метки */
+  font-weight: 700;
+}
 
-  .main-subtitle { 
-    font-size: 16px; 
-    margin: 5px 0 20px 0; 
-  } 
+.info-value {
+  color: var(--main-color); /* Цвет значения */
+  font-weight: 400;
+  text-align: right;
+  max-width: 60%;
+  word-wrap: break-word; /* Перенос слов, если длинные */
+}
 
-  .info-line, section pre, #command-input { 
-    font-size: 13px; 
-  } 
+.info-value a {
+  color: var(--main-color);
+  text-decoration: none;
+  border-bottom: 1.5px dashed var(--main-color); /* Пунктирное подчеркивание */
+  transition: all 0.3s ease; /* Плавный переход */
+  padding-bottom: 2px;
+  user-select: text; /* Разрешаем выделение текста ссылок */
+}
 
-  .music-box { 
-    width: 70px; 
-    height: 70px; 
-    top: 45px; 
-    left: 5px; 
-  } 
+.info-value a:hover {
+  color: var(--accent-color);
+  border-bottom: 2px solid var(--accent-color);
+  text-shadow: 0 0 8px var(--accent-color);
+}
 
-  #music-icon { 
-    font-size: 14px; 
-  } 
-  #music-title { 
-    font-size: 9px; 
-  } 
+/* Анимация строки загрузки (для главной секции) */
+.waiting-line {
+  margin-top: 40px;
+  font-size: 16px;
+  text-align: center;
+  white-space: nowrap; /* Не переносить текст */
+  overflow: hidden; /* Скрывать выходящий за границы текст */
+  border-right: 3px solid var(--main-color); /* Курсор */
+  width: 14ch; /* Ширина в символах */
+  animation: typing 3s steps(14) infinite, blink-caret 0.75s step-end infinite; /* Анимации набора и мигания курсора */
+  margin-left: auto; margin-right: auto;
+  letter-spacing: 0.1em;
+  user-select: none;
+}
 
-  .system-logs { 
-    margin-top: 20px; 
-    height: 70px; 
-    padding: 5px; 
-    width: calc(100% - 10px); 
-  } 
+/* Анимация набора текста */
+@keyframes typing {
+  0%, 50% { width: 0; }
+  100% { width: 14ch; }
+}
 
-  .terminal-footer { 
-    height: 35px; 
-    padding: 0 8px; 
-    width: calc(100% - 16px); 
-  } 
+/* Анимация мигания курсора */
+@keyframes blink-caret {
+  50% { border-color: transparent; }
+  100% { border-color: var(--main-color); }
+}
+
+/* Блок управления музыкой */
+.music-box {
+  position: fixed;
+  top: 60px; left: 20px;
+  width: 110px; height: 110px;
+  background: var(--bg-dark);
+  border: 2px solid var(--main-color);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--main-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  color: var(--main-color);
+  text-align: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  user-select: none;
+}
+
+.music-box:hover {
+  box-shadow: 0 0 25px var(--accent-color);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+#music-icon {
+  font-size: 18px;
+  margin-bottom: 6px;
+  user-select: none;
+}
+
+#music-title {
+  font-size: 11px;
+  line-height: 1.2em;
+  padding: 0 8px;
+  user-select: none;
+}
+
+/* Стили для pre-блоков с эффектом набора (списки прайса, контактов) */
+section pre {
+  font-family: var(--font-mono);
+  color: var(--text-color);
+  background: transparent;
+  border: none;
+  white-space: pre-line; /* Сохраняет переносы строк, но объединяет пробелы */
+  line-height: 1.4em;
+  margin: 0 auto;
+  max-width: 500px;
+  min-height: 150px; /* Чтобы область была видна даже без текста */
+  position: relative;
+  overflow: hidden; /* Скрываем текст до его набора */
+  flex-grow: 1; /* Позволяет занимать доступное пространство */
+}
+
+/* Курсор для эффекта набора текста в pre-блоках */
+.typed-cursor {
+  display: inline-block; /* Изначально невидимый */
+  background-color: var(--main-color); /* Цвет курсора */
+  width: 8px;
+  height: 1.2em; /* Высота относительно шрифта */
+  margin-left: 5px;
+  vertical-align: middle;
+  animation: blink-cursor 0.75s step-end infinite; /* Анимация мигания */
+}
+
+/* --- Стили для консоли внутри секции BIO (для ПК) --- */
+/* По умолчанию скрываем консоль, она будет показана JS, когда #main.active-section */
+.system-logs, .terminal-footer {
+  display: none; /* Скрываем по умолчанию */
+}
+
+/* Когда секция #main активна, показываем консоль */
+#main.active-section .system-logs {
+  display: block; /* Показываем системные логи */
+  position: fixed; /* Фиксированное положение на ПК */
+  bottom: 80px;
+  left: 20px;
+  width: 300px;
+  height: 100px;
+  background: var(--bg-dark);
+  border: 1px solid var(--main-color);
+  box-shadow: 0 0 15px var(--main-color);
+  padding: 10px;
+  font-size: 12px;
+  line-height: 1.3em;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  z-index: 999;
+  border-radius: 8px;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+#main.active-section .terminal-footer {
+  display: flex; /* Показываем футер терминала */
+  position: fixed; /* Фиксированное положение на ПК */
+  bottom: 0; left: 0; right: 0;
+  height: 50px;
+  background: var(--bg-dark);
+  border-top: 1px solid var(--main-color);
+  align-items: center;
+  padding: 0 20px;
+  z-index: 1000;
+  box-shadow:
+    0 0 15px var(--main-color),
+    inset 0 1px 1px var(--accent-color);
+  box-sizing: border-box;
+}
+
+/* Стилизация скроллбара для логов (для WebKit-браузеров) */
+#main.active-section .system-logs::-webkit-scrollbar {
+  width: 5px;
+}
+#main.active-section .system-logs::-webkit-scrollbar-track {
+  background: transparent;
+}
+#main.active-section .system-logs::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 5px;
+}
+
+#log-output span {
+  display: block; /* Каждая строка лога на новой строке */
+  color: rgba(var(--main-color), 0.7); /* Чуть приглушенный цвет */
+}
+
+#main.active-section .terminal-footer .prompt {
+  color: var(--accent-color); /* Цвет символа '>' */
+  font-size: 18px;
+  margin-right: 10px;
+  user-select: none;
+}
+
+#main.active-section #command-input {
+  flex-grow: 1; /* Занимает всё доступное пространство */
+  background: transparent; /* Прозрачный фон */
+  border: none; /* Без границ */
+  outline: none; /* Без обводки при фокусе */
+  color: var(--main-color);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  caret-color: transparent; /* Скрываем мигающий курсор */
+  letter-spacing: 0.05em;
+  cursor: default; /* Курсор по умолчанию, чтобы не выглядел как поле ввода */
+  opacity: 0.7; /* Делаем полупрозрачным, чтобы показать, что оно неактивно */
+  pointer-events: none; /* Полностью отключаем события мыши */
+}
+
+/* Медиа-запросы для мобильных устройств (переопределяют стили ПК) */
+@media (max-width: 768px) {
+  nav button {
+    font-size: 12px;
+    padding: 8px 12px; /* Уменьшены паддинги для лучшего размещения */
+    margin: 0 4px; /* Уменьшены отступы */
+  }
+
+  .container {
+    margin: 70px auto 100px auto;
+    padding: 0 10px;
+  }
+
+  section {
+    padding: 20px 25px 30px;
+    width: calc(100% - 50px);
+  }
+
+  section h1 {
+    font-size: 24px;
+  }
+
+  .avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .main-subtitle, .info-line, section pre, #command-input {
+    font-size: 14px;
+  }
+
+  .waiting-line {
+    font-size: 14px;
+  }
+
+  .music-box {
+    width: 90px;
+    height: 90px;
+    top: 55px;
+    left: 10px;
+  }
+
+  #music-icon {
+    font-size: 16px;
+  }
+  #music-title {
+    font-size: 10px;
+  }
+
+  /* Для мобильных устройств консоль внутри секции main должна быть относительной */
+  #main.active-section .system-logs {
+    position: relative; /* Теперь не фиксирована, а в потоке секции */
+    margin-top: 30px;
+    width: 100%; /* Занимает всю ширину родителя */
+    height: 120px;
+    padding: 8px;
+    font-size: 11px;
+    bottom: auto; /* Сбрасываем фиксированные свойства */
+    left: auto;
+  }
+
+  #main.active-section .terminal-footer {
+    position: relative; /* Теперь не фиксирована, а в потоке секции */
+    margin-top: 10px;
+    width: 100%; /* Занимает всю ширину родителя */
+    height: 35px;
+    padding: 0 10px;
+    bottom: auto; /* Сбрасываем фиксированные свойства */
+    left: auto;
+    right: auto;
+  }
+
+  #main.active-section .terminal-footer .prompt {
+    font-size: 14px;
+    margin-right: 6px;
+  }
+  #main.active-section #command-input {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  nav {
+    height: 40px;
+  }
+  nav button {
+    font-size: 9px; /* Еще уменьшен шрифт */
+    padding: 6px 8px; /* Еще уменьшены паддинги */
+    margin: 0 2px; /* Еще уменьшены отступы */
+  }
+
+  .container {
+    margin: 50px auto 80px auto;
+  }
+
+  section {
+    padding: 15px 20px 20px;
+    width: calc(100% - 40px);
+  }
+
+  section h1 {
+    font-size: 20px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 15px;
+  }
+
+  .main-subtitle {
+    font-size: 16px;
+    margin: 5px 0 20px 0;
+  }
+
+  .info-line, section pre, #command-input {
+    font-size: 13px;
+  }
+
+  .music-box {
+    width: 70px;
+    height: 70px;
+    top: 45px;
+    left: 5px;
+  }
+
+  #music-icon {
+    font-size: 14px;
+  }
+  #music-title {
+    font-size: 9px;
+  }
+
+  #main.active-section .system-logs {
+    height: 100px;
+    padding: 6px;
+    font-size: 10px;
+  }
+
+  #main.active-section .terminal-footer {
+    height: 30px;
+    padding: 0 6px;
+  }
+  #main.active-section .terminal-footer .prompt {
+    font-size: 12px;
+  }
+  #main.active-section #command-input {
+    font-size: 12px;
+  }
 }
